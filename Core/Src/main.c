@@ -189,16 +189,15 @@ int main(void)
 
     SendUART("Test SX1211 : Lecture du registre 0x01...\r\n");
 
-    
+    uint8_t i;
 
-    SX1211_WriteRegister(0x01, 0x49);
-    HAL_Delay(10);
-
-    uint8_t modeRegister = SX1211_ReadRegister(0x01);
-
-    char buffer[50];
-    sprintf(buffer, "Valeur lue: 0x%02X\r\n", modeRegister);
-    SendUART(buffer);
+       /* Initializes SX1211 en sautant le registre d'adresse 20 */
+    for(i = 0; i <= REG_PKTPARAM4; i++)
+    {
+      if(i==REG_RSSIVALUE) continue;
+      SX1211_WriteRegister(i, RegistersCfg[i]);
+    }
+  
 
     while (1)
     {
