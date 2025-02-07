@@ -1138,6 +1138,9 @@
                     <name>$PROJ_DIR$\..\Core\Src\stm32g0xx_it.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\Core\Src\sx1211.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\Core\Src\usart.c</name>
                 </file>
             </group>

@@ -19,8 +19,8 @@
  Description: Fonctions du SX1211
  Auteur:      Jean Luc DUPUIS
  Version:     00
- CPU: STM32F207VG @ 120MHz interne
- Compilateur IAR EWARM v7.80 Librairies ST V1.1.2
+ CPU: STM32F103TB @ 36MHz interne
+ Compilateur IAR EWARMv5 Librairies ST V3.0.0
  Modifications:
  01/09/09: Adaptation au STM32.
 
@@ -32,6 +32,22 @@
 /*******************************************************************
 ** SX1211 definitions                                             **
 *******************************************************************/
+#include <stdbool.h>
+#include <stdio.h>   // Pour printf
+#include <string.h>  // Pour strlen si besoin
+#include "main.h"
+
+#define NSS_CONF_LOW()   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+#define NSS_CONF_HIGH()  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+#define NSS_DATA_LOW()   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+#define NSS_DATA_HIGH()  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+#define IRQ_0           (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6))
+#define IRQ_1           (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
+
+/*
+#define SPI2_ReadByte    BSP_SPI_ByteRead
+#define SPI2_SendByte    BSP_SPI_ByteSend
+#define TESTRF_DELAY    500  ms d'attente consécutives avant de decider */
 
 /*******************************************************************
 ** SX1211 Operating modes definition                              **
@@ -280,10 +296,8 @@
 // RSSI threshold for interrupt 
 // 802.15.4 dit CCA thresold = Sensitivity @BER=1% + 10dB. Sensibilite mesuree par Semtech @BER=0.1% : -104dBm
 // -104 + 10 =-94dBm ou RSSI=50.
-//#define RF_RSSIIRQTHRESH_VALUE           50 /* -90dBm */
-//#define RF_RSSIIRQTHRESH_VALUE           70 /* -80dBm qualif */
-//#define RF_RSSIIRQTHRESH_VALUE           130 /* -50dBm qualif */
-#define RF_RSSIIRQTHRESH_VALUE           140 /* -50dBm qualif */
+#define RF_RSSIIRQTHRESH_VALUE           130  // pour detecter � -45dBm, bien au dessus du seuil de bruit � -90dBm.
+
 
 // RX Param 1
 // Passive filter (kHz)
@@ -506,10 +520,27 @@
 #define TS_FS          800  // Freq Synth wake-up time from OS, max 800 us
 #define TS_RE          500  // Receiver wake-up time from FS, max 500 us
 #define TS_TR          500 // Transmitter wake-up time from FS, max 500 us
-
 #define ED_TIME        320 /* 802.15.4 dit 8 symboles, a 25ksymboles/sec, 320�s */ 
 
 /* Private macro ----------------------------------------------------------------------------------*/
 #define RF_FIFO_EMPTY   (IRQ_0 == 0)      /* Fifo SX1211 */
-
 /* Private variables ------------------------------------------------------------------------------*/
+/* Public function prototypes ---------------------------------------------------------------------*/
+void SetMyNid(uint8_t Nid);                            /* MyNID */
+int8_t RF_Rssi_to_dbm(uint8_t rssi);      /* RSSI vers dBm */
+void RF_SetNodeId(uint8_t node);          /* Set NodeId */
+void RF_SetAddressFiltering(uint8_t mode);/* Regle le filtrage des paquets */
+void SetRFMode(uint8_t mode);
+bool RF_Configuration(void);              /* Init du chip */
+void RF_SetCurrentNetid(uint32_t Netid);  /* Set NETID */
+bool RF_ReceiveFrame(uint8_t *buffer);    /* Trame recue ? */
+void RF_TransmitFrame(uint8_t * pBuffer); /* Emission */
+uint32_t RF_GetCurrentNetid(void);        /* Read NETID */
+uint16_t RF_GetRSSI(void);                /* Read RSSI */
+uint8_t RF_GetNodeId(void);               /* Read Nodeid */
+void RF_SetRfPower(uint8_t pow);          /* TX Power setting from RF_TX_POWER_MINUS8 upto RF_TX_POWER_MAX */
+bool RF_CsmaCa(void);                     /* 802.15.4 */
+
+/* Test CCITT */
+bool RF_CcittConfiguration(void);         /* Init du chip pour mode CCITT */
+void RF_CcittLoop(void);                  /* a faire toutes les 20ms mini */
