@@ -104,6 +104,7 @@ C31:00                    Non initialise en mode buffered
 #include <stdlib.h>
 #include <stdio.h>   // Pour printf
 #include <string.h>  // Pour strlen si besoin
+#include "usart.h"
 
 
 void SetMyNid(uint8_t Nid);
@@ -360,6 +361,8 @@ bool RF_Configuration(void)
     if(i==REG_RSSIVALUE) continue;
     WriteRegister(i, RegistersCfg[i]);
   }
+
+
   /* Test de la presence du chip sans utiliser le semaphore de la SPI2 */
   if(ReadRegister(REG_SYNCBYTE1) != 0x12 || ReadRegister(REG_SYNCBYTE2) != 0x34 ||
      ReadRegister(REG_SYNCBYTE3) != 0x56 || ReadRegister(REG_SYNCBYTE4) != 0x78) {return false;}
@@ -778,15 +781,14 @@ void RF_SetRfPower(uint8_t pow)
 * MAINTENANCE      :
 * 01/09/2009 JLD: Adaptation R8C-->STM32
 *********************************************************************************************************/
-void WriteRegister(uint8_t reg, uint8_t value)
+void WriteRegister(uint8_t address, uint8_t value)
 {
-  uint8_t data[2] = {reg | 0x80, value}; // Bit 7 à 1 pour écriture
-  
     NSS_CONF_LOW();
-    HAL_SPI_Transmit(&hspi1, data, 2, HAL_MAX_DELAY);
+    address = (address << 1) & 0x3E ;
+    HAL_SPI_Transmit(&hspi1, &address, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&hspi1, &value, 1, HAL_MAX_DELAY);
     NSS_CONF_HIGH();
-
-} /* void WriteRegister(uint8_t address, uint8_t value) */
+}
 
 /**********************************************************************************************************
 * NOM:uint8_t ReadRegister(uint8_t address)
@@ -798,17 +800,18 @@ void WriteRegister(uint8_t reg, uint8_t value)
 * 22/04/2008 JLD: Creation
 * 01/09/2009 JLD: Adaptation R8C-->STM32
 *********************************************************************************************************/
-uint8_t ReadRegister(uint8_t reg)
+uint8_t ReadRegister(uint8_t address)
 {
-  uint8_t data[2] = {reg & 0x7F, 0x00}; // Bit 7 à 0 pour lecture
-  uint8_t received[2];
+    address = ((address << 1) & 0x3E | 0x40) ;
+    uint8_t received[2] = {0x00, 0x00};  // Initialisation pour éviter des valeurs aléatoires
 
-  NSS_CONF_LOW();
-  HAL_SPI_TransmitReceive(&hspi1, data, received, 2, HAL_MAX_DELAY);
-  NSS_CONF_HIGH();
-  
-  return received[1];  /* Valeur lue */
-} /* uint8_t ReadRegister(uint8_t address) */
+    NSS_CONF_LOW();
+    HAL_SPI_TransmitReceive(&hspi1, &address, received, 2, HAL_MAX_DELAY);
+    NSS_CONF_HIGH();
+
+    return received[1]; // Le 2ème octet contient la vraie réponse
+}
+
 
 /**********************************************************************************************************
 * NOM:void WriteFifo(uint8_t data)
@@ -821,10 +824,9 @@ uint8_t ReadRegister(uint8_t reg)
 *********************************************************************************************************/
 void WriteFifo(uint8_t dataByte)
 {
-  uint8_t data[2] = {0x16 | 0x80, dataByte}; // Bit 7 à 1 pour écriture
-
+  
   NSS_DATA_LOW();
-  HAL_SPI_Transmit(&hspi1, data, 2, HAL_MAX_DELAY);
+  HAL_SPI_Transmit(&hspi1, &dataByte, 2, HAL_MAX_DELAY);
   NSS_DATA_HIGH();
 
 } /* void WriteFifo(uint8_t data) */
@@ -840,10 +842,10 @@ void WriteFifo(uint8_t dataByte)
 * 21/04/2008 JLD: Creation
 * 28/11/2017 NA: Adaptation STM32L433 scoped 325 pour 320�s ED_TIME, 5071 pour 5000�s TS_OS.
 *********************************************************************************************************/
-/*void Wait(uint16_t t)
+void Wait(uint16_t t)
 {
-  BSP_WaitXus(t);
-}  void Wait(uint16 t)  */
+    HAL_Delay(t);  // Attente de 't' millisecondes
+}
 
 /*--------------------------------------------------------------------------------------------------------*/
 /*------------------------------ CSMA-CA -----------------------------------------------------------------*/

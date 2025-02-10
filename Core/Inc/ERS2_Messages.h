@@ -11,13 +11,21 @@
 /* 29/02/16 JLD ALARM_TAG remplace par CHUNK. Ajout enum _CHUNK_ */
 /* 22/03/16 JLD Ajout R41213-R41220: ID_CHAUDIERE */
 /* 01/04/16 JLD Ajout R41400 et Poisson d'Avril ! */
-/*21/09/16 JLD Ajout Registres R31272 à R31279 */
+/*21/09/16 JLD Ajout Registres R31272 ï¿½ R31279 */
 /*07/10/16 JLD  Ajout flags TC_VEILLE et AUTO_MANU dans Registres R41212 */
 /*23/11/16 JLD  R41312-R41315 KWh mensuels */
 /*09/02/17 JLD  Ajout NID Rif_Sext */
 /*08/09/17 JLD  NID Rif supprime, Deplacement NID Rif_Sext */
 /*15/02/18 JLD  Ajout R41108-R41115 dans Face avant */
 /* Codes de fonctions */
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>   // Pour printf
+#include <string.h>  // Pour strlen si besoin
+
 enum _MODBUS_FUNCTION_
 {
   READ_HOLDING_REG      = 0x03,

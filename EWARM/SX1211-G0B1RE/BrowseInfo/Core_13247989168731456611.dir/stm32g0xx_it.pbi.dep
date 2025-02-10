@@ -1,6 +1,5 @@
-C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\SX1211-G0B1RE\BrowseInfo\Core_13247989168731456611.dir\spi.pbi: \
-  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\Core\Src\spi.c \
-  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\spi.h \
+C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\SX1211-G0B1RE\BrowseInfo\Core_13247989168731456611.dir\stm32g0xx_it.pbi: \
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\Core\Src\stm32g0xx_it.c \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\main.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\stm32g0xx_hal_conf.h \
@@ -41,4 +40,5 @@ C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\SX1211-G0B1RE\BrowseInfo\
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_spi.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_spi_ex.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_uart.h \
-  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_uart_ex.h
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_uart_ex.h \
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\stm32g0xx_it.h

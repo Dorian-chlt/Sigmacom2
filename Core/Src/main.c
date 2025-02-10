@@ -30,7 +30,9 @@
 #include <stdio.h>   // Pour printf
 #include <string.h>  // Pour strlen si besoin
 
+uint32_t netid = 0xFFFFFFFF;
 void SystemClock_Config(void);
+
 
 void SendUART(const char *msg) {
     HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
@@ -45,8 +47,24 @@ int main(void)
     MX_GPIO_Init();
     MX_SPI1_Init();
     MX_USART2_UART_Init();
+    
+    if(RF_Configuration()){
+      SendUART("configue reussi\r\n");
+    }else{
+      SendUART("configue echouee\r\n");
+    }
 
-    SendUART("Test SX1211 : Lecture du registre 0x01...\r\n");
+    RF_SetCurrentNetid(netid);
+
+
+    HAL_Delay(5000);
+    uint8_t netidNew = RF_GetCurrentNetid();  // Lire la valeur du NetID
+
+    char buffer[50];
+    sprintf(buffer, "RF NetID: 0x%02X\r\n", netidNew);  // Formater l'affichage en hexadécimal
+    SendUART(buffer);  // Envoyer en UART
+
+    RF_GetCurrentNetid();
 
     while (1)
     {
