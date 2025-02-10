@@ -22,6 +22,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "sx1211.h"
+#include "ERS2_Messages.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -32,6 +33,14 @@
 
 uint32_t netid = 0xFFFFFFFF;
 void SystemClock_Config(void);
+
+APU_SX1211 TrameRx;
+APU_SX1211 TrameTx;
+
+bool l3_net_to_appli(APU_SX1211* p)
+{
+  return(RF_ReceiveFrame((uint8_t *)&p->Taille));
+}
 
 
 void SendUART(const char *msg) {
@@ -60,14 +69,30 @@ int main(void)
     HAL_Delay(5000);
     uint8_t netidNew = RF_GetCurrentNetid();  // Lire la valeur du NetID
 
+ 
+
     char buffer[50];
     sprintf(buffer, "RF NetID: 0x%02X\r\n", netidNew);  // Formater l'affichage en hexadécimal
     SendUART(buffer);  // Envoyer en UART
 
     RF_GetCurrentNetid();
 
+    if(l3_net_to_appli(&TrameRx)) /* Message reçu */
+    { 
+      SendUART("message recu\r\n");
+    }else{
+      SendUART("message pas recu\r\n");
+    }
+
     while (1)
     {
+      if(l3_net_to_appli(&TrameRx)) /* Message reçu */
+      { 
+        SendUART("message recu\r\n");
+      }else{
+        SendUART("message pas recu\r\n");
+      }
+  
       HAL_Delay(1000);
     }
 }
