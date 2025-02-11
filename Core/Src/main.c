@@ -66,7 +66,7 @@ int main(void)
     RF_SetCurrentNetid(netid);
 
 
-    HAL_Delay(5000);
+    HAL_Delay(3000);
     uint8_t netidNew = RF_GetCurrentNetid();  // Lire la valeur du NetID
 
  
@@ -77,23 +77,36 @@ int main(void)
 
     RF_GetCurrentNetid();
 
-    if(l3_net_to_appli(&TrameRx)) /* Message reçu */
-    { 
-      SendUART("message recu\r\n");
-    }else{
-      SendUART("message pas recu\r\n");
-    }
+    SetRFMode(RF_RECEIVER);
 
     while (1)
     {
-      if(l3_net_to_appli(&TrameRx)) /* Message reçu */
+      if (l3_net_to_appli(&TrameRx)) /* Message reçu */
       { 
-        SendUART("message recu\r\n");
+          SendUART("📡 Message reçu !\r\n");
+
+          char buffer[256];  // Buffer assez grand pour stocker tout l'affichage
+          
+          sprintf(buffer, 
+                  "Retries: %d, Taille: %d, Dest: 0x%02X, Exp: 0x%02X, Cle: 0x%02X, Numero: %d, Adresse: 0x%02X\r\n",
+                  TrameRx.Retries, TrameRx.Taille, TrameRx.Dest, TrameRx.Exp,
+                  TrameRx.Cle, TrameRx.Numero, TrameRx.Adresse);
+          SendUART(buffer);
+          
+          SendUART("📡 Données Modbus :\r\n");
+
+          for (uint8_t i = 0; i < sizeof(TrameRx.Modbus); i++) {
+              char byte_str[6];  // Buffer pour "0xXX "
+              sprintf(byte_str, "0x%02X ", ((uint8_t*)&TrameRx.Modbus)[i]);  // Cast pour accès octet par octet
+              SendUART(byte_str);
+          }
+          
+          SendUART("\r\n");
       }else{
         SendUART("message pas recu\r\n");
       }
   
-      HAL_Delay(1000);
+      HAL_Delay(720);
     }
 }
 

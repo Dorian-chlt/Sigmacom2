@@ -252384,13 +252384,55 @@
     "scope": null
   },
   {
+    "ID": "c:main.c@2202@F@main@buffer",
+    "What": "Variable",
+    "defdec": "Def",
+    "display": "buffer",
+    "location": {
+      "column": "16",
+      "line": "88",
+      "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\main.c"
+    },
+    "name": "buffer",
+    "origin": "project_file",
+    "scope": null
+  },
+  {
+    "ID": "c:main.c@2687@F@main@i",
+    "What": "Variable",
+    "defdec": "Def",
+    "display": "i",
+    "location": {
+      "column": "24",
+      "line": "98",
+      "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\main.c"
+    },
+    "name": "i",
+    "origin": "project_file",
+    "scope": null
+  },
+  {
+    "ID": "c:main.c@2752@F@main@byte_str",
+    "What": "Variable",
+    "defdec": "Def",
+    "display": "byte_str",
+    "location": {
+      "column": "20",
+      "line": "99",
+      "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\main.c"
+    },
+    "name": "byte_str",
+    "origin": "project_file",
+    "scope": null
+  },
+  {
     "ID": "c:@F@SystemClock_Config",
     "What": "Function",
     "defdec": "Def",
     "display": "void SystemClock_Config(void)",
     "location": {
       "column": "6",
-      "line": "105",
+      "line": "118",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\main.c"
     },
     "name": "SystemClock_Config",
@@ -252398,13 +252440,13 @@
     "scope": null
   },
   {
-    "ID": "c:main.c@2522@F@SystemClock_Config@RCC_OscInitStruct",
+    "ID": "c:main.c@3209@F@SystemClock_Config@RCC_OscInitStruct",
     "What": "Variable",
     "defdec": "Def",
     "display": "RCC_OscInitStruct",
     "location": {
       "column": "22",
-      "line": "107",
+      "line": "120",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\main.c"
     },
     "name": "RCC_OscInitStruct",
@@ -252412,13 +252454,13 @@
     "scope": null
   },
   {
-    "ID": "c:main.c@2569@F@SystemClock_Config@RCC_ClkInitStruct",
+    "ID": "c:main.c@3256@F@SystemClock_Config@RCC_ClkInitStruct",
     "What": "Variable",
     "defdec": "Def",
     "display": "RCC_ClkInitStruct",
     "location": {
       "column": "22",
-      "line": "108",
+      "line": "121",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\main.c"
     },
     "name": "RCC_ClkInitStruct",
@@ -252432,7 +252474,7 @@
     "display": "void Error_Handler(void)",
     "location": {
       "column": "6",
-      "line": "149",
+      "line": "162",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\main.c"
     },
     "name": "Error_Handler",
