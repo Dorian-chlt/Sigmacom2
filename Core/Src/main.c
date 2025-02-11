@@ -81,29 +81,26 @@ int main(void)
 
     while (1)
     {
-      if (l3_net_to_appli(&TrameRx)) /* Message reçu */
-      { 
-          SendUART("📡 Message reçu !\r\n");
+      uint8_t rfBuffer[SX1211_FIFO_SIZE];  // Taille max de la FIFO
+      if (RF_ReceiveFrame(rfBuffer))  // Si un message RF est reçu
+      {
+          SendUART("📡 Message RF reçu !\r\n");
 
-          char buffer[256];  // Buffer assez grand pour stocker tout l'affichage
-          
-          sprintf(buffer, 
-                  "Retries: %d, Taille: %d, Dest: 0x%02X, Exp: 0x%02X, Cle: 0x%02X, Numero: %d, Adresse: 0x%02X\r\n",
-                  TrameRx.Retries, TrameRx.Taille, TrameRx.Dest, TrameRx.Exp,
-                  TrameRx.Cle, TrameRx.Numero, TrameRx.Adresse);
-          SendUART(buffer);
-          
-          SendUART("📡 Données Modbus :\r\n");
+          char buffer[256] = {0};  // Buffer assez grand pour l'affichage
+          sprintf(buffer, "Données RF : ");
 
-          for (uint8_t i = 0; i < sizeof(TrameRx.Modbus); i++) {
-              char byte_str[6];  // Buffer pour "0xXX "
-              sprintf(byte_str, "0x%02X ", ((uint8_t*)&TrameRx.Modbus)[i]);  // Cast pour accès octet par octet
-              SendUART(byte_str);
+          for (uint8_t i = 0; i < SX1211_FIFO_SIZE; i++) {
+              char byte_str[4];  // Buffer pour "0xXX "
+              sprintf(byte_str, "%02X ", rfBuffer[i]);  // Affichage en hexadécimal
+              strcat(buffer, byte_str);
           }
-          
-          SendUART("\r\n");
-      }else{
-        SendUART("message pas recu\r\n");
+
+          strcat(buffer, "\r\n");
+          SendUART(buffer);
+      }
+      else
+      {
+          SendUART("⛔ Aucun message RF reçu.\r\n");
       }
   
       HAL_Delay(720);
