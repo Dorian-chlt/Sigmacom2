@@ -39,7 +39,7 @@
 #define _CDC_	  	0x00	    /* Version de cdc */
 #define _RELEASE_	0x04	    /* Version de soft */
 #define _DTCR_     "27;00;04"       /* MST display char ASCII */
-//#define DEBUG /* Definition manuelle si l'environnement ne gère pas l'option */
+//#define DEBUG /* Definition manuelle si l'environnement ne gï¿½re pas l'option */
 //#define WO_APP_RESET
 //#define WO_ADC_AVERAGE
 //#define WO_ACT_WEB     /* RAZ de l'info equipement Visio Connect */
@@ -48,15 +48,15 @@
 /*----------------------------------------------------------------------------*/
 #define _PRD_   /* Production avec passage aux bancs tests RF et Vision */
 //#define _VAL_   /* Validation sans passage aux bancs tests (avec des cartes parfaites) */
-//#define _LAB_   /* Laboratoire avec equipements RF non matchés ---> LABO */
-//#define _RND_   /* R&D speciale avec equipements RF pre-matchés ----> NA */
+//#define _LAB_   /* Laboratoire avec equipements RF non matchï¿½s ---> LABO */
+//#define _RND_   /* R&D speciale avec equipements RF pre-matchï¿½s ----> NA */
 /*----------------------------------------------------------------------------*/
 #endif/*DEBUG*/
 
-/* ATTENTION pdt la map avec equipements RF pre-matchés un chgt de FAV
+/* ATTENTION pdt la map avec equipements RF pre-matchï¿½s un chgt de FAV
 necessite un full erase, pour forcer l'auto-init avec preset de la FLASH */
 #define _FAVLED_   /* Compil pour map avec Fav LED type ERS */
-//#define _FAVOLD_   /* Compil pour map avec Fav LCD à icones semi-graphique */
+//#define _FAVOLD_   /* Compil pour map avec Fav LCD ï¿½ icones semi-graphique */
 
 #define _VERSDISPLAY_       /* Dir. de compil. pour afficher la version du THM */
 //#define _TESTDISPLAY_
@@ -71,20 +71,20 @@ necessite un full erase, pour forcer l'auto-init avec preset de la FLASH */
 #define THMCX (ucIDPART - NID_FAV_Collective_1) /* numero de collectif C1=0,.., C4=3 */
 
 #define TIM01sRST_REPEAT  610   /* Effectue une TX RF vers la FAV toutes les 10mns */
-#define TOP_TIME_NDOFSWREL  15  /* XXs apres le dernier relaché */
+#define TOP_TIME_NDOFSWREL  15  /* XXs apres le dernier relachï¿½ */
 
-/* Envoie une trame vers le PART 03s après le dernier relaché */
+/* Envoie une trame vers le PART 03s aprï¿½s le dernier relachï¿½ */
 #define RF_REFRESH03s  uiTIM01sRST_SAMPLE = TIM01sRST_REPEAT-3; 
 
-/* Envoie une trame vers le PART XXs après le dernier relaché */
+/* Envoie une trame vers le PART XXs aprï¿½s le dernier relachï¿½ */
 #define RF_REFRESHXXs  uiTIM01sRST_SAMPLE = TIM01sRST_REPEAT-TOP_TIME_NDOFSWREL;
 
 /* Timeout */
 #define TIMEOUT_REDSUPxH            18 /* car 18 x 10mn = 180mn = 3h */
-#define TIMEOUT_TIM01sACT_INFO       5 // Timeout chargé à 5s.
-#define TIMEOUT_TIM01sMST_UPDT      30 // Timeout chargé à 30s.
-#define TIMEOUT_TIM01sWEB_UPDT       4 // Timeout chargé à 4s.
-#define TIMEOUT_TIM1TSWEBMODIF       1 // Timeout chargé à 1TimeSlot.
+#define TIMEOUT_TIM01sACT_INFO       5 // Timeout chargï¿½ ï¿½ 5s.
+#define TIMEOUT_TIM01sMST_UPDT      30 // Timeout chargï¿½ ï¿½ 30s.
+#define TIMEOUT_TIM01sWEB_UPDT       4 // Timeout chargï¿½ ï¿½ 4s.
+#define TIMEOUT_TIM1TSWEBMODIF       1 // Timeout chargï¿½ ï¿½ 1TimeSlot.
 #define SW_MATCHING_AXS              13     //   13 x  DELAY_REPEAT_250ms.
 #define SW_AXS_REGL_LVL0              2     //    2 x  DELAY_REPEAT 02s
 #define SW_AXS_REGL_LVL1              5     //    5 x  DELAY_REPEAT_FIRST 05s
@@ -94,17 +94,17 @@ necessite un full erase, pour forcer l'auto-init avec preset de la FLASH */
 #define TIMEOUT_TIM5msRUN_ACT_BY_MATF            6000 // 6000 x  5ms    30s.
 #define TIMEOUT_TIM5msRUN_ACT_BY_RXLV            2000 // 2000 x  5ms    10s.
 #define TIMEOUT_TIM5msRUN_ACT_BY_RXGC             400 //  400 x  5ms     2s.
-#define TIMEOUT_TIM5msRUN_ACT_BY_AUTO TO_T5msRUNAUTOMAX // 3776 x  5ms 18,88s, pour 2x(4TX-RX + alea non acquittés).
+#define TIMEOUT_TIM5msRUN_ACT_BY_AUTO TO_T5msRUNAUTOMAX // 3776 x  5ms 18,88s, pour 2x(4TX-RX + alea non acquittï¿½s).
 #define TIMEOUT_TIM5msRUN_ACT_BY_INFO   200 //  200 x  5ms 1000ms.
 #define TIMEOUT_TIM5msRUN_ACT_BY_WAIT    20 //   20 x  5ms  100ms.
-#define TIMEOUT_TIM01sLIM_MODE       600 /* Timeout chargé à 600 */
-#define RTC_HBKP      1  /* à 01hXX */
-#define RTC_MBKP      5  /* à XXh05 */
-#define RTC_SBKP      36 /* à XXhXX36s */
+#define TIMEOUT_TIM01sLIM_MODE       600 /* Timeout chargï¿½ ï¿½ 600 */
+#define RTC_HBKP      1  /* ï¿½ 01hXX */
+#define RTC_MBKP      5  /* ï¿½ XXh05 */
+#define RTC_SBKP      36 /* ï¿½ XXhXX36s */
 
-/* Paramètres installateur de la mesure de la CTN */
-#define STEP01C      1 /* Step d'inc/dec à 0.1C° */
-#define TABSOF7PRO  20 /* Temperature absolue maxi d'offset cad (-2.0°C à +2.0°C) */
+/* Paramï¿½tres installateur de la mesure de la CTN */
+#define STEP01C      1 /* Step d'inc/dec ï¿½ 0.1Cï¿½ */
+#define TABSOF7PRO  20 /* Temperature absolue maxi d'offset cad (-2.0ï¿½C ï¿½ +2.0ï¿½C) */
 
 /* valeur initiale de g_Text pour ne pas l'afficher */
 #define SANS_Text 1290 
@@ -211,7 +211,7 @@ enum _SMCLK_ITEM_
   SMCLK_4,      /* Menu clk heure */
   SMCLK_5,      /* Menu clk dernier cas : minute */
 };
-#define SMCLK_X SMCLK_5 /* affichage des fenetres de SMCLK_0 à SMCLK_X */
+#define SMCLK_X SMCLK_5 /* affichage des fenetres de SMCLK_0 ï¿½ SMCLK_X */
 
 typedef struct{
   uint16_t  TypeDeRegulation:3;   /* REGULATION_XXX */
@@ -252,7 +252,7 @@ union byte_def{
     char	b6:1;
     char	b7:1;
   }bit;
-  uint8	byte;
+  uint8_t	byte;
 };
 
 union word_def{
@@ -274,16 +274,16 @@ union word_def{
     char	b14:1;
     char	b15:1;
   }bit;
-  uint16 word;
+  uint16_t word;
 };
 
 /* Structure de HH48SEG */
 typedef struct
 {
-  UINT8 RAM[6];    
+  uint8_t RAM[6];    
 }HH48SEG;
 
-/* Flags Transmis à la FAV et le WEB */
+/* Flags Transmis ï¿½ la FAV et le WEB */
 extern union word_def SFlags0;      /* Structure */
 #define SFlags0Value	SFlags0.word	/* all bits value */
 #define FLAG_SUN_STATE            SFlags0.bit.b0
@@ -448,9 +448,9 @@ extern union word_def SMsg2Go;     /* Structure */
 #define IS_LUG_THM_OR_LED       (IS_FAVLEDS && (IS_ACTLUG_BEG || FLAG_FAV_HGL_ACT))
 #define IS_ERR_HANDLER_RD       ((ulResetSoft != 0)&&(!FLAG_TOUCH))
 /*
-Exemple de define d'un bit pour la trace au scope à action double INT/EXT ald d'un bit INT seul.
+Exemple de define d'un bit pour la trace au scope ï¿½ action double INT/EXT ald d'un bit INT seul.
 #define FLAG_ACT_MATC             LED_2//SFlags5.bit.b1
-permet l'affichage au scope de l'activité de la phase de matching.
+permet l'affichage au scope de l'activitï¿½ de la phase de matching.
 */
 
 
@@ -461,7 +461,7 @@ permet l'affichage au scope de l'activité de la phase de matching.
 //    SET_BIT(hadc->Instance->CR, ADC_CR_ADCAL);
 
 /*=== VARIABLES EXTERNES ==================================================*/
-/* globales utilisées par tout le monde */
+/* globales utilisï¿½es par tout le monde */
 typedef struct {
   uint8_t Var_01;
   #define ucSMMODE              SRAM2EEP.Var_01
@@ -526,32 +526,32 @@ typedef struct {
 }RAM2EEP;
 extern RAM2EEP SRAM2EEP;
 
-extern uint8 ucSMLCD,ucSMINF,ucSMRAD,ucSMCLK;
+extern uint8_t ucSMLCD,ucSMINF,ucSMRAD,ucSMCLK;
 #define RAM_SHH_DAY7A_INIT   ((uint8_t)0xF0) /* SHH_DAYxx init */
 #define RAM_SHH_DAY7B_INIT   ((uint8_t)0x0F) /* SHH_DAYxx init */
 extern HH48SEG SHH_DAY7;
-extern uint16 uiVar_Check;
-extern uint8  ucTIM01sMST_UPDT;
-extern uint16 uiTIM01sLIM_MODE;
+extern uint16_t uiVar_Check;
+extern uint8_t  ucTIM01sMST_UPDT;
+extern uint16_t uiTIM01sLIM_MODE;
 
-extern uint8 ucTIM01sACT_INFO;
-extern uint16 uiTIM01sRST_SAMPLE;
-extern uint16 uiTIM5msRUN;
+extern uint8_t ucTIM01sACT_INFO;
+extern uint16_t uiTIM01sRST_SAMPLE;
+extern uint16_t uiTIM5msRUN;
 
-extern int16 g_Text; /* Temperature exterieure initialisée à SANS_Text */
-extern int16 g_Tamb; /* Thermostat_LCD_Zone_1_Ambiance */
-extern int16 g_Tcse; /* Thermostat_LCD_Zone_1_Consigne */
-extern int16 g_Toto; /* Thermostat_LCD_Zone_1_Consigne */
-extern int16 g_Temp; /* Thermostat_LCD_Zone_1_Consigne */
-extern uint16 g_Batt;
+extern int16_t g_Text; /* Temperature exterieure initialisï¿½e ï¿½ SANS_Text */
+extern int16_t g_Tamb; /* Thermostat_LCD_Zone_1_Ambiance */
+extern int16_t g_Tcse; /* Thermostat_LCD_Zone_1_Consigne */
+extern int16_t g_Toto; /* Thermostat_LCD_Zone_1_Consigne */
+extern int16_t g_Temp; /* Thermostat_LCD_Zone_1_Consigne */
+extern uint16_t g_Batt;
 
-extern uint8 ucProg_Curs;
-extern uint8 Rf_Level_Quality; /* niveau de réception radio de la face avant */
-extern uint8 Langue;  /* attention variable à peut-etre sauvegarder en virtual eeprom */
-extern uint16 uiCDZMEMAVRED;
+extern uint8_t ucProg_Curs;
+extern uint8_t Rf_Level_Quality; /* niveau de rï¿½ception radio de la face avant */
+extern uint8_t Langue;  /* attention variable ï¿½ peut-etre sauvegarder en virtual eeprom */
+extern uint16_t uiCDZMEMAVRED;
 
 /* fonctions globales utilisable par tout le monde */
-extern uint8 Bcd2Dec(uint8 bcd);
-extern uint8 Dec2Bcd(uint8 dec);
+extern uint8_t Bcd2Dec(uint8_t bcd);
+extern uint8_t Dec2Bcd(uint8_t dec);
 
 #endif /* __DEFS_H */
