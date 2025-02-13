@@ -253812,13 +253812,57 @@
     "scope": null
   },
   {
+    "ID": "c:@E@_L3_TX_STATUS_",
+    "What": "Enum",
+    "defdec": "Def",
+    "display": "_L3_TX_STATUS_",
+    "fields": [
+      {
+        "ID": "c:@E@_L3_TX_STATUS_@L3_TX_ACKNOWLEDGED",
+        "What": "Enumerator",
+        "defdec": "Def",
+        "display": "L3_TX_ACKNOWLEDGED",
+        "location": {
+          "column": "3",
+          "line": "55",
+          "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
+        },
+        "name": "L3_TX_ACKNOWLEDGED",
+        "origin": "project_file",
+        "scope": null
+      },
+      {
+        "ID": "c:@E@_L3_TX_STATUS_@L3_TX_NACK",
+        "What": "Enumerator",
+        "defdec": "Def",
+        "display": "L3_TX_NACK",
+        "location": {
+          "column": "3",
+          "line": "56",
+          "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
+        },
+        "name": "L3_TX_NACK",
+        "origin": "project_file",
+        "scope": null
+      }
+    ],
+    "location": {
+      "column": "6",
+      "line": "54",
+      "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
+    },
+    "name": "_L3_TX_STATUS_",
+    "origin": "project_file",
+    "scope": null
+  },
+  {
     "ID": "c:@L3_Status",
     "What": "Variable",
     "defdec": "Dec",
     "display": "L3_Status",
     "location": {
       "column": "16",
-      "line": "55",
+      "line": "60",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "L3_Status",
@@ -253832,7 +253876,7 @@
     "display": "ucTimerTX2TX",
     "location": {
       "column": "16",
-      "line": "56",
+      "line": "61",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "ucTimerTX2TX",
@@ -253846,7 +253890,7 @@
     "display": "ucMEMFAV_SA",
     "location": {
       "column": "16",
-      "line": "57",
+      "line": "62",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "ucMEMFAV_SA",
@@ -253860,7 +253904,7 @@
     "display": "ucMEMFAV_SM",
     "location": {
       "column": "16",
-      "line": "58",
+      "line": "63",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "ucMEMFAV_SM",
@@ -253874,7 +253918,7 @@
     "display": "ucMEMFAV_SJ",
     "location": {
       "column": "16",
-      "line": "59",
+      "line": "64",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "ucMEMFAV_SJ",
@@ -253888,7 +253932,7 @@
     "display": "uiMEMFAV_CS",
     "location": {
       "column": "17",
-      "line": "60",
+      "line": "65",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "uiMEMFAV_CS",
@@ -253902,7 +253946,7 @@
     "display": "Langue",
     "location": {
       "column": "9",
-      "line": "62",
+      "line": "67",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "Langue",
@@ -253916,7 +253960,7 @@
     "display": "Rf_Level_Quality",
     "location": {
       "column": "9",
-      "line": "63",
+      "line": "68",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "Rf_Level_Quality",
@@ -253930,7 +253974,7 @@
     "display": "SRegistresRW_FAV",
     "location": {
       "column": "11",
-      "line": "64",
+      "line": "69",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "SRegistresRW_FAV",
@@ -253944,7 +253988,7 @@
     "display": "SRegistresRW_COM",
     "location": {
       "column": "11",
-      "line": "65",
+      "line": "70",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "SRegistresRW_COM",
@@ -253958,7 +254002,7 @@
     "display": "SRegistresR_COM",
     "location": {
       "column": "11",
-      "line": "66",
+      "line": "71",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "SRegistresR_COM",
@@ -253972,7 +254016,7 @@
     "display": "SRegistresRW_THM",
     "location": {
       "column": "11",
-      "line": "67",
+      "line": "72",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "SRegistresRW_THM",
@@ -253986,7 +254030,7 @@
     "display": "SRegistresRW_SAT_SGC",
     "location": {
       "column": "15",
-      "line": "68",
+      "line": "73",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "SRegistresRW_SAT_SGC",
@@ -254000,7 +254044,7 @@
     "display": "SRegistresRW_SAT_LED",
     "location": {
       "column": "15",
-      "line": "69",
+      "line": "74",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "SRegistresRW_SAT_LED",
@@ -254014,7 +254058,7 @@
     "display": "SRegistresRW_SGC_LED",
     "location": {
       "column": "15",
-      "line": "70",
+      "line": "75",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "SRegistresRW_SGC_LED",
@@ -254028,7 +254072,7 @@
     "display": "uint16_t uifnMEMFAV_CS(void)",
     "location": {
       "column": "10",
-      "line": "81",
+      "line": "86",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "uifnMEMFAV_CS",
@@ -254036,13 +254080,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@4158@F@uifnMEMFAV_CS@i",
+    "ID": "c:Modbus.c@4345@F@uifnMEMFAV_CS@i",
     "What": "Variable",
     "defdec": "Def",
     "display": "i",
     "location": {
       "column": "12",
-      "line": "83",
+      "line": "88",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "i",
@@ -254050,13 +254094,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@4173@F@uifnMEMFAV_CS@j",
+    "ID": "c:Modbus.c@4360@F@uifnMEMFAV_CS@j",
     "What": "Variable",
     "defdec": "Def",
     "display": "j",
     "location": {
       "column": "12",
-      "line": "84",
+      "line": "89",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "j",
@@ -254070,7 +254114,7 @@
     "display": "void MODBUS_mb_req_pdu(APU_SX1211 *, APU_SX1211 *)",
     "location": {
       "column": "6",
-      "line": "107",
+      "line": "112",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "MODBUS_mb_req_pdu",
@@ -254078,13 +254122,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5479@F@MODBUS_mb_req_pdu@q",
+    "ID": "c:Modbus.c@5666@F@MODBUS_mb_req_pdu@q",
     "What": "Variable",
     "defdec": "Def",
     "display": "q",
     "location": {
       "column": "12",
-      "line": "109",
+      "line": "114",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "q",
@@ -254092,13 +254136,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5494@F@MODBUS_mb_req_pdu@first_address",
+    "ID": "c:Modbus.c@5681@F@MODBUS_mb_req_pdu@first_address",
     "What": "Variable",
     "defdec": "Def",
     "display": "first_address",
     "location": {
       "column": "12",
-      "line": "110",
+      "line": "115",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "first_address",
@@ -254106,13 +254150,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5494@F@MODBUS_mb_req_pdu@last_address",
+    "ID": "c:Modbus.c@5681@F@MODBUS_mb_req_pdu@last_address",
     "What": "Variable",
     "defdec": "Dec",
     "display": "last_address",
     "location": {
       "column": "27",
-      "line": "110",
+      "line": "115",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "last_address",
@@ -254120,13 +254164,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5494@F@MODBUS_mb_req_pdu@starting_address",
+    "ID": "c:Modbus.c@5681@F@MODBUS_mb_req_pdu@starting_address",
     "What": "Variable",
     "defdec": "Dec",
     "display": "starting_address",
     "location": {
       "column": "40",
-      "line": "110",
+      "line": "115",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "starting_address",
@@ -254134,13 +254178,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5494@F@MODBUS_mb_req_pdu@quantity_read",
+    "ID": "c:Modbus.c@5681@F@MODBUS_mb_req_pdu@quantity_read",
     "What": "Variable",
     "defdec": "Dec",
     "display": "quantity_read",
     "location": {
       "column": "58",
-      "line": "110",
+      "line": "115",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "quantity_read",
@@ -254148,13 +254192,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5494@F@MODBUS_mb_req_pdu@quantity_write",
+    "ID": "c:Modbus.c@5681@F@MODBUS_mb_req_pdu@quantity_write",
     "What": "Variable",
     "defdec": "Dec",
     "display": "quantity_write",
     "location": {
       "column": "73",
-      "line": "110",
+      "line": "115",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "quantity_write",
@@ -254162,13 +254206,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5583@F@MODBUS_mb_req_pdu@taille",
+    "ID": "c:Modbus.c@5770@F@MODBUS_mb_req_pdu@taille",
     "What": "Variable",
     "defdec": "Def",
     "display": "taille",
     "location": {
       "column": "11",
-      "line": "111",
+      "line": "116",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "taille",
@@ -254176,13 +254220,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5583@F@MODBUS_mb_req_pdu@byte_count",
+    "ID": "c:Modbus.c@5770@F@MODBUS_mb_req_pdu@byte_count",
     "What": "Variable",
     "defdec": "Dec",
     "display": "byte_count",
     "location": {
       "column": "22",
-      "line": "111",
+      "line": "116",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "byte_count",
@@ -254190,13 +254234,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@5617@F@MODBUS_mb_req_pdu@p",
+    "ID": "c:Modbus.c@5804@F@MODBUS_mb_req_pdu@p",
     "What": "Variable",
     "defdec": "Def",
     "display": "p",
     "location": {
       "column": "13",
-      "line": "112",
+      "line": "117",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "p",
@@ -254210,7 +254254,7 @@
     "display": "void MODBUS_mb_rsp_pdu(APU_SX1211 *)",
     "location": {
       "column": "6",
-      "line": "315",
+      "line": "320",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "MODBUS_mb_rsp_pdu",
@@ -254218,13 +254262,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@16545@F@MODBUS_mb_rsp_pdu@Langue_Check",
+    "ID": "c:Modbus.c@16732@F@MODBUS_mb_rsp_pdu@Langue_Check",
     "What": "Variable",
     "defdec": "Def",
     "display": "Langue_Check",
     "location": {
       "column": "12",
-      "line": "318",
+      "line": "323",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "Langue_Check",
@@ -254232,13 +254276,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@16579@F@MODBUS_mb_rsp_pdu@decalage",
+    "ID": "c:Modbus.c@16766@F@MODBUS_mb_rsp_pdu@decalage",
     "What": "Variable",
     "defdec": "Def",
     "display": "decalage",
     "location": {
       "column": "12",
-      "line": "320",
+      "line": "325",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "decalage",
@@ -254252,7 +254296,7 @@
     "display": "void MODBUS_sendrw_req_pdu(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint16_t *, APU_SX1211 *)",
     "location": {
       "column": "6",
-      "line": "426",
+      "line": "431",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "MODBUS_sendrw_req_pdu",
@@ -254260,13 +254304,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@22071@F@MODBUS_sendrw_req_pdu@taille",
+    "ID": "c:Modbus.c@22258@F@MODBUS_sendrw_req_pdu@taille",
     "What": "Variable",
     "defdec": "Def",
     "display": "taille",
     "location": {
       "column": "11",
-      "line": "428",
+      "line": "433",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "taille",
@@ -254274,13 +254318,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@22094@F@MODBUS_sendrw_req_pdu@byte_count",
+    "ID": "c:Modbus.c@22281@F@MODBUS_sendrw_req_pdu@byte_count",
     "What": "Variable",
     "defdec": "Def",
     "display": "byte_count",
     "location": {
       "column": "11",
-      "line": "429",
+      "line": "434",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "byte_count",
@@ -254294,7 +254338,7 @@
     "display": "void MODBUS_sendrw_req_pd2(uint16_t, uint16_t, uint16_t, uint16_t, uint8_t, uint8_t *, APU_SX1211 *)",
     "location": {
       "column": "6",
-      "line": "454",
+      "line": "459",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "MODBUS_sendrw_req_pd2",
@@ -254302,13 +254346,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@23707@F@MODBUS_sendrw_req_pd2@taille",
+    "ID": "c:Modbus.c@23894@F@MODBUS_sendrw_req_pd2@taille",
     "What": "Variable",
     "defdec": "Def",
     "display": "taille",
     "location": {
       "column": "11",
-      "line": "456",
+      "line": "461",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "taille",
@@ -254316,13 +254360,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@23730@F@MODBUS_sendrw_req_pd2@byte_count",
+    "ID": "c:Modbus.c@23917@F@MODBUS_sendrw_req_pd2@byte_count",
     "What": "Variable",
     "defdec": "Def",
     "display": "byte_count",
     "location": {
       "column": "11",
-      "line": "457",
+      "line": "462",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "byte_count",
@@ -254336,7 +254380,7 @@
     "display": "void MODBUS_sendr_req_pdu(uint16_t, uint16_t, APU_SX1211 *)",
     "location": {
       "column": "6",
-      "line": "489",
+      "line": "494",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "MODBUS_sendr_req_pdu",
@@ -254344,13 +254388,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@25749@F@MODBUS_sendr_req_pdu@taille",
+    "ID": "c:Modbus.c@25936@F@MODBUS_sendr_req_pdu@taille",
     "What": "Variable",
     "defdec": "Def",
     "display": "taille",
     "location": {
       "column": "11",
-      "line": "491",
+      "line": "496",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "taille",
@@ -254364,7 +254408,7 @@
     "display": "void MODBUS_sendAl_req_pdu(uint8_t, uint8_t, const char *, const char *, APU_SX1211 *)",
     "location": {
       "column": "6",
-      "line": "514",
+      "line": "519",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "MODBUS_sendAl_req_pdu",
@@ -254372,13 +254416,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@27421@F@MODBUS_sendAl_req_pdu@taille",
+    "ID": "c:Modbus.c@27608@F@MODBUS_sendAl_req_pdu@taille",
     "What": "Variable",
     "defdec": "Def",
     "display": "taille",
     "location": {
       "column": "11",
-      "line": "516",
+      "line": "521",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "taille",
@@ -254386,13 +254430,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@27444@F@MODBUS_sendAl_req_pdu@ucNbrChar",
+    "ID": "c:Modbus.c@27631@F@MODBUS_sendAl_req_pdu@ucNbrChar",
     "What": "Variable",
     "defdec": "Def",
     "display": "ucNbrChar",
     "location": {
       "column": "11",
-      "line": "517",
+      "line": "522",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "ucNbrChar",
@@ -254406,7 +254450,7 @@
     "display": "void MODBUS_Set_Registers(void)",
     "location": {
       "column": "6",
-      "line": "568",
+      "line": "573",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "MODBUS_Set_Registers",
@@ -254414,13 +254458,13 @@
     "scope": null
   },
   {
-    "ID": "c:Modbus.c@29897@F@MODBUS_Set_Registers@nibble",
+    "ID": "c:Modbus.c@30084@F@MODBUS_Set_Registers@nibble",
     "What": "Variable",
     "defdec": "Def",
     "display": "nibble",
     "location": {
       "column": "11",
-      "line": "570",
+      "line": "575",
       "path": "C:\\Users\\d.chollet\\Documents\\STM32\\SX1211-G0B1RE\\Core\\Src\\Modbus.c"
     },
     "name": "nibble",

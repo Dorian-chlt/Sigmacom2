@@ -51,6 +51,11 @@ extern uint16_t uifnMEMFAV_CS(void);
 extern void RF_WEB2THM(void);
 extern void UPDT_SYS2BUF(void);
 
+enum _L3_TX_STATUS_ {
+  L3_TX_ACKNOWLEDGED,    /* ACK du distant le message a bien été compris */
+  L3_TX_NACK             /* NACK du distant le message envoyé est erroné */
+};
+
 /*=== VARIABLES EXTERNES ================================================================================*/
 extern uint8_t L3_Status;
 extern uint8_t ucTimerTX2TX;
