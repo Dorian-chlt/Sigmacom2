@@ -1483,6 +1483,9 @@
                     <name>$PROJ_DIR$\..\Core\Src\main.c</name>
                 </file>
                 <file>
+                    <name>$PROJ_DIR$\..\Core\Src\Modbus.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\Core\Src\spi.c</name>
                 </file>
                 <file>

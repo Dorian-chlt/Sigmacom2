@@ -17,12 +17,12 @@
  Projet:  THM 947.
  Fichier:  layer3.h
  Description: Fichier de definition du layer 3.
- Auteur:      Benoît MARQUANT
+ Auteur:      Benoï¿½t MARQUANT
  Version:     XX-00
  CPU: R8C24 / 20 MHz
  Modifications:
  02/11/09: Creation.
- 12/07/10: NA : Mise à jour pour le THM.
+ 12/07/10: NA : Mise ï¿½ jour pour le THM.
 -----------------------------------------------------------------------------------------------------------
                 Propriete de A. THEOBALD SA
          Ne peut etre copie ou diffuse sans son accord prealable
@@ -30,6 +30,15 @@
 /*=== INCLUDE FILES =====================================================================================*/
 /*=== DEFINITIONS GLOBALES ==============================================================================*/
 /* Read communs */
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>   // Pour printf
+#include <string.h> 
+#include "ERS2_Messages.h"
 typedef struct  {
   uint16_t Reg_30001;   /* Donnee tracker #1 */
   uint16_t Reg_30002;
@@ -171,7 +180,7 @@ typedef struct{
 #define BUF_WEB_SFlagsWValueMSB SRegistresRW_SAT_SGC.Reg_41300[5]  /* RRW_FAV_SAT1_FlagsWMSB */
 #define BUF_WEB_SHH_DAY0        SRegistresRW_SAT_SGC.Reg_41300[6]  /* RRW_FAV_SAT1_SHH_DAY0 */
 
-/* offset d'adressage RRW dans la FAV pour l'accès individuel des THM_Zx */
+/* offset d'adressage RRW dans la FAV pour l'accï¿½s individuel des THM_Zx */
 #define OF7_THM_Zx 5   
 
 /* RW particuliers de FAV */
@@ -185,7 +194,7 @@ typedef struct{
 #define BUF_FAV_CdzW            SRegistresRW_FAV.Reg_41XX[3]  /* RRW_FAV_Zone_x_Commande_rst_write */
 #define BUF_FAV_CdzR            SRegistresRW_FAV.Reg_41XX[4]  /* RRW_FAV_Zone_x_Commande_rst_read */
 
-/* Nombre de caractères affichables par ligne sur la FAV */
+/* Nombre de caractï¿½res affichables par ligne sur la FAV */
 #define MAX_NBR_CHAR              26
 
 /* Ordre et appelation des langues */
@@ -201,21 +210,21 @@ typedef enum
 
 #define LANGUE_LAST CHN   /* definit la dimension maximum des tables */
 
-//#define DEF_LANGUE FRA  /* pour la map avec une seule langue imposée */
+//#define DEF_LANGUE FRA  /* pour la map avec une seule langue imposï¿½e */
 
 /*====================================== EXTERNES =========================================================*/
-void MODBUS_sendAl_req_pdu(uint8 NumeroAlarme, uint8 Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq);
+void MODBUS_sendAl_req_pdu(uint8_t NumeroAlarme, uint8_t Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq);
 void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq);   /* traitement buffer d'entree */
 void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp);
-void MODBUS_sendrw_req_pdu(uint16 StartAdr_R, uint16 StartAdr_W, uint16 Qty_R, uint16 Qty_W, uint8 W_Byte_Count, uint16_t* Datas, APU_SX1211* pModbusReq);
-void MODBUS_sendrw_req_pd2(uint16 StartAdr_R, uint16 StartAdr_W, uint16 Qty_R, uint16 Qty_W, uint8 W_Byte_Count, uint8_t*  Datas, APU_SX1211* pModbusReq);
-void MODBUS_sendr_req_pdu(uint16 StartAdr_R, uint16 Qty_R, APU_SX1211* pModbusReq);
+void MODBUS_sendrw_req_pdu(uint16_t StartAdr_R, uint16_t StartAdr_W, uint16_t Qty_R, uint16_t Qty_W, uint8_t W_Byte_Count, uint16_t* Datas, APU_SX1211* pModbusReq);
+void MODBUS_sendrw_req_pd2(uint16_t StartAdr_R, uint16_t StartAdr_W, uint16_t Qty_R, uint16_t Qty_W, uint8_t W_Byte_Count, uint8_t*  Datas, APU_SX1211* pModbusReq);
+void MODBUS_sendr_req_pdu(uint16_t StartAdr_R, uint16_t Qty_R, APU_SX1211* pModbusReq);
 void MODBUS_Set_Registers(void);
 
 extern REGRW_COM SRegistresRW_COM; /* Registres communs */
 extern REGR_COM  SRegistresR_COM;  /* Registres communs */
-extern REGRW_FAV SRegistresRW_FAV; /* Registres read/write spécifiques FAV */
-extern REGRW_THM SRegistresRW_THM; /* Registres read/write spécifiques THM */
-extern REGRW_SAT_SGC SRegistresRW_SAT_SGC; /* Registres read/write spécifiques RW_SAT_SGC */
-extern REGRW_SAT_LED SRegistresRW_SAT_LED; /* Registres read/write spécifiques RW_SAT_LED */
-extern REGRW_SGC_LED SRegistresRW_SGC_LED; /* Registres read/write spécifiques RW_SGC_LED */
+extern REGRW_FAV SRegistresRW_FAV; /* Registres read/write spï¿½cifiques FAV */
+extern REGRW_THM SRegistresRW_THM; /* Registres read/write spï¿½cifiques THM */
+extern REGRW_SAT_SGC SRegistresRW_SAT_SGC; /* Registres read/write spï¿½cifiques RW_SAT_SGC */
+extern REGRW_SAT_LED SRegistresRW_SAT_LED; /* Registres read/write spï¿½cifiques RW_SAT_LED */
+extern REGRW_SGC_LED SRegistresRW_SGC_LED; /* Registres read/write spï¿½cifiques RW_SGC_LED */

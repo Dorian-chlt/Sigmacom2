@@ -29,7 +29,15 @@
 ---------------------------------------------------------------------------------------------------------*/
 
 /*=== INCLUDE FILES =====================================================================================*/
-#include "bsp.h"
+#include "Modbus.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>   // Pour printf
+#include <string.h>
+#include "defs.h"
 
 /*=== DEFINITIONS GLOBALES ==============================================================================*/
 /* Adresse Zone read/write specifique SIGMA */
@@ -39,30 +47,30 @@
 /*=== PROTOTYPES DES FONCTIONS ==========================================================================*/
 extern void RF_Keep_RXLV(void); /* Conditions de maintien en RXLV */
 void MODBUS_Set_Registers(void);
-extern uint16 uifnMEMFAV_CS(void);
+extern uint16_t uifnMEMFAV_CS(void);
 extern void RF_WEB2THM(void);
 extern void UPDT_SYS2BUF(void);
 
 /*=== VARIABLES EXTERNES ================================================================================*/
-extern uint8 L3_Status;
-extern uint8 ucTimerTX2TX;
-extern uint8 ucMEMFAV_SA;
-extern uint8 ucMEMFAV_SM;
-extern uint8 ucMEMFAV_SJ;
-extern uint16 uiMEMFAV_CS;
+extern uint8_t L3_Status;
+extern uint8_t ucTimerTX2TX;
+extern uint8_t ucMEMFAV_SA;
+extern uint8_t ucMEMFAV_SM;
+extern uint8_t ucMEMFAV_SJ;
+extern uint16_t uiMEMFAV_CS;
 /*=== VARIABLES GLOBALES ================================================================================*/
-uint8 Langue;  /* attention variable à peut-etre sauvegarder en virtual eeprom */
-uint8 Rf_Level_Quality; /* niveau de réception radio de la face avant */
-REGRW_FAV SRegistresRW_FAV; /* Registres read/write spécifiques FAV */
+uint8_t Langue;  /* attention variable ï¿½ peut-etre sauvegarder en virtual eeprom */
+uint8_t Rf_Level_Quality; /* niveau de rï¿½ception radio de la face avant */
+REGRW_FAV SRegistresRW_FAV; /* Registres read/write spï¿½cifiques FAV */
 REGRW_COM SRegistresRW_COM; /* Registres communs */
 REGR_COM  SRegistresR_COM;  /* Registres communs */
-REGRW_THM SRegistresRW_THM; /* Registres read/write spécifiques THM */
-REGRW_SAT_SGC SRegistresRW_SAT_SGC; /* Registres read/write spécifiques RW_SAT_SGC */
-REGRW_SAT_LED SRegistresRW_SAT_LED; /* Registres read/write spécifiques RW_SAT_LED */
-REGRW_SGC_LED SRegistresRW_SGC_LED; /* Registres read/write spécifiques RW_SGC_LED */
+REGRW_THM SRegistresRW_THM; /* Registres read/write spï¿½cifiques THM */
+REGRW_SAT_SGC SRegistresRW_SAT_SGC; /* Registres read/write spï¿½cifiques RW_SAT_SGC */
+REGRW_SAT_LED SRegistresRW_SAT_LED; /* Registres read/write spï¿½cifiques RW_SAT_LED */
+REGRW_SGC_LED SRegistresRW_SGC_LED; /* Registres read/write spï¿½cifiques RW_SGC_LED */
 /*=== FONCTIONS =========================================================================================*/
 /**********************************************************************************************************
-* NOM:uint16 uifnMEMFAV_CS(void)
+* NOM:uint16_t uifnMEMFAV_CS(void)
 *
 * DESCRIPTION      : Calcul de la somme de la zone de RAM.
 * PARAMETRES       :
@@ -70,10 +78,10 @@ REGRW_SGC_LED SRegistresRW_SGC_LED; /* Registres read/write spécifiques RW_SGC_L
 * MAINTENANCE      :
 * 06/06/2013  NA: Creation
 *********************************************************************************************************/
-uint16 uifnMEMFAV_CS(void)
+uint16_t uifnMEMFAV_CS(void)
 {
-  uint8  i;
-  uint16 j=0;
+  uint8_t  i;
+  uint16_t j=0;
   for( i = 0; i < 72; i++ ){
     j=j+SRegistresRW_THM.Reg_41502[i]; /* compute sum for all i values */
   }
@@ -87,14 +95,14 @@ uint16 uifnMEMFAV_CS(void)
 * VALEUR RETOURNEE :Sans
 * MAINTENANCE      :
 * 19/10/2009 JLD: Creation
-* 23/02/2010  NA: Opt de code, Suppression des case non utilisés.
+* 23/02/2010  NA: Opt de code, Suppression des case non utilisï¿½s.
 * 25/10/2011 BM/NA: Ajout gestion de IDKEYX.
 * 25/10/2011  NA: Supp des 3 ecritures successives en NVM lors du Matching.
-* 15/11/2011  NA: Supp de la gestion de réponse au matching.
+* 15/11/2011  NA: Supp de la gestion de rï¿½ponse au matching.
 * 06/03/2012  NA: Ajout demande de reset.
 * 09/10/2012 BM/NA: Ajout verif. sur SET_NETID que le periph. souhaite par la FAV correspond au NodeId courant.
 * 09/02/2016 BM/NA: Ajout RD_WR_MULTIPLE_REG en version light (zone dediee only).
-* 18/05/2016 JLD/NA: Ajout version du THM transmise à la FAV sur l'ack du matching.
+* 18/05/2016 JLD/NA: Ajout version du THM transmise ï¿½ la FAV sur l'ack du matching.
 *********************************************************************************************************/
 void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
 {
@@ -125,7 +133,7 @@ void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
         first_address = RRW_Dummy;
         last_address = RRW_COM_FIN;
         p = (uint16_t*)&SRegistresRW_COM.Reg_40000 + starting_address - first_address;
-        UPDT_SYS2BUF();/* Maj des données du systeme vers le buffer d'échange.*/
+        UPDT_SYS2BUF();/* Maj des donnï¿½es du systeme vers le buffer d'ï¿½change.*/
       }
       else
       { /* Zone read/write specifique SAT_SGC */
@@ -188,18 +196,18 @@ void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
         /* [ACK] */
         pModbusRsp->Modbus.FunctionCode = pModbusReq->Modbus.FunctionCode;
 
-        /* On propose un backup à la FAV si disponible */
+        /* On propose un backup ï¿½ la FAV si disponible */
         if((uifnMEMFAV_CS() + uiMEMFAV_CS) == 0xFFFF){
           /* [3][AA][MM][JJ] */
           pModbusRsp->Modbus.Datas[taille++] = 3;
           pModbusRsp->Modbus.Datas[taille++] = Dec2Bcd(ucMEMFAV_SA);
           pModbusRsp->Modbus.Datas[taille++] = Dec2Bcd(ucMEMFAV_SM);
           pModbusRsp->Modbus.Datas[taille++] = Dec2Bcd(ucMEMFAV_SJ);
-          FLAG_ACT_TIM5msRUN_BY_MATF = TRUE;
+          FLAG_ACT_TIM5msRUN_BY_MATF = true;
           uiTIM5msRUN = TIMEOUT_TIM5msRUN_ACT_BY_MATF;
         }
         else{
-          FLAG_ACT_TIM5msRUN_BY_MATF = TRUE;
+          FLAG_ACT_TIM5msRUN_BY_MATF = true;
           uiTIM5msRUN = TIMEOUT_TIM5msRUN_ACT_BY_MATC;
         }
         /* On transmet les infos de la version du THM */
@@ -225,17 +233,17 @@ void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
 */
     byte_count = pModbusReq->Modbus.Datas[0];
     if(byte_count != 0x00)
-    { /* données présentes */
+    { /* donnï¿½es prï¿½sentes */
       RF_Keep_RXLV(); /* Conditions de maintien en RXLV */
-      Rf_Level_Quality = pModbusReq->Modbus.Datas[1];; /* qualité de réception de la face avant : de 00 à 05 */
-      SRegistresR_COM.Reg_30020 = Rf_Level_Quality; /* niveau de réception radio de la face avant */
-      /* on acquitte avec une trame d'au moins 20ms pour permettre à la face avant de mesurer son niveau de réception radio */
+      Rf_Level_Quality = pModbusReq->Modbus.Datas[1];; /* qualitï¿½ de rï¿½ception de la face avant : de 00 ï¿½ 05 */
+      SRegistresR_COM.Reg_30020 = Rf_Level_Quality; /* niveau de rï¿½ception radio de la face avant */
+      /* on acquitte avec une trame d'au moins 20ms pour permettre ï¿½ la face avant de mesurer son niveau de rï¿½ception radio */
       pModbusRsp->Modbus.FunctionCode = pModbusReq->Modbus.FunctionCode;
       pModbusRsp->Adresse = pModbusReq->Adresse;
-      /* On remplie les 58 octets de données */
-      pModbusRsp->Modbus.Datas[0] = SX1211_FIFO_SIZE-SIZEOF_HEADER-2; /* nombre d'octets de données 56 */
+      /* On remplie les 58 octets de donnï¿½es */
+      pModbusRsp->Modbus.Datas[0] = SX1211_FIFO_SIZE-SIZEOF_HEADER-2; /* nombre d'octets de donnï¿½es 56 */
       q = RF_GetRSSI();
-      memset(&pModbusRsp->Modbus.Datas[1],q,(SX1211_FIFO_SIZE-SIZEOF_HEADER-2)); /* remplie les 56 octets de données avec mon niveau de réception radio */
+      memset(&pModbusRsp->Modbus.Datas[1],q,(SX1211_FIFO_SIZE-SIZEOF_HEADER-2)); /* remplie les 56 octets de donnï¿½es avec mon niveau de rï¿½ception radio */
       pModbusRsp->Taille = SX1211_FIFO_SIZE-SIZEOF_HEADER-1; /* 57 */
     }
     else
@@ -266,8 +274,8 @@ void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
       memcpy(&pModbusRsp->Modbus.Datas[1],&SRegistresRW_THM.Reg_41501+(first_address - RRW_THM_DEBUT),sizeof(char)*byte_count);
       pModbusRsp->Modbus.FunctionCode = pModbusReq->Modbus.FunctionCode;
       pModbusRsp->Taille = byte_count+1;
-      if(first_address == RRW_THM_Magic)FLAG_READEND = TRUE;
-      if(first_address == RRW_THM_Backup_48)FLAG_READCHK = TRUE;
+      if(first_address == RRW_THM_Magic)FLAG_READEND = true;
+      if(first_address == RRW_THM_Backup_48)FLAG_READCHK = true;
     }
     else{
      pModbusRsp->Modbus.FunctionCode = pModbusReq->Modbus.FunctionCode + 0x80;
@@ -288,17 +296,17 @@ void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
 /**********************************************************************************************************
 * NOM:void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp)
 *
-* DESCRIPTION      :Traitement de la trame de réponse à une requête ModBus
+* DESCRIPTION      :Traitement de la trame de rï¿½ponse ï¿½ une requï¿½te ModBus
 * PARAMETRES       :Ptr sur le buffer de Reponse, Ptr sur le buffer de requete.
 * VALEUR RETOURNEE :Sans
 * MAINTENANCE      :
 * 19/10/2009 JLD: Creation
 * 12/07/2010 BM/NA: Modification il faut diviser par 2 la valeur de byte_count.
-* 09/11/2011  NA: Mise à jour de la variable de reception des Flags de la FAV.
-* 16/11/2011  NA: Ajout pour occulter le FLAG_ALREP du msg pas de sat. initialisé.
+* 09/11/2011  NA: Mise ï¿½ jour de la variable de reception des Flags de la FAV.
+* 16/11/2011  NA: Ajout pour occulter le FLAG_ALREP du msg pas de sat. initialisï¿½.
 * 11/01/2012  NA: Ajout L3_TX_ACKNOWLEDGED sur case ALARM manquant.
 * 21/02/2012  NA: Ajout RESTART_CALENDAR_COUNTER, pour une raz complete de la quantification de la seconde.
-* 26/06/2012  NA: Ajout DEF_LANGUE, pour la map avec une seule langue imposée.
+* 26/06/2012  NA: Ajout DEF_LANGUE, pour la map avec une seule langue imposï¿½e.
 * 15/02/2016  NA: Ajout filtrage avant maj des variables et supp du Baro.
 * 18/05/2016  NA: Ajout langue ALL et controle avec par defaut FRA si inconnue.
 * 16/02/2018  NA: Modif maj de la RTC hard ald soft.
@@ -307,15 +315,15 @@ void MODBUS_mb_req_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
 void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp)
 {
 #ifndef DEF_LANGUE
-  uint8  Langue_Check;
+  uint8_t  Langue_Check;
 #endif
-  uint8  decalage = (THMZX * OF7_THM_Zx)*2;
+  uint8_t  decalage = (THMZX * OF7_THM_Zx)*2;
   /* On suit le document V1.1 du protocole  */
   /* Fonction code supported ? */
   switch(pModbusRsp->Modbus.FunctionCode)
   {
     case RD_WR_MULTIPLE_REG:
-        if(FLAG_MSGAmbi||(!FLAG_MSGAlrm && FLAG_MSGACFM)){/* pas de mise à jour des valeurs sinon */
+        if(FLAG_MSGAmbi||(!FLAG_MSGAlrm && FLAG_MSGACFM)){/* pas de mise ï¿½ jour des valeurs sinon */
           g_Text = ((int16_t)pModbusRsp->Modbus.Datas[1] << 8) + ((int16_t)pModbusRsp->Modbus.Datas[2]);
           /* if the wakeup timer is enabled then deactivate it to disable the wakeup timer interrupt */
           HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);
@@ -342,18 +350,18 @@ void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp)
 /*----------------------------------------------------------------------------*/
 #ifdef  WO_ACT_WEB
 /*----------------------------------------------------------------------------*/
-          FLAG_ACT_WEB = FALSE; /* pas de Connect pdt la map !!! */
+          FLAG_ACT_WEB = false; /* pas de Connect pdt la map !!! */
 /*----------------------------------------------------------------------------*/
 #endif/*WO_ACT_WEB*/
           
           if(FLAG_NOALREP){
-            FLAG_NOALREP = FALSE;
-            FLAG_ALREP = FALSE;
-            FLAG_ACT_WEB = FALSE;
+            FLAG_NOALREP = false;
+            FLAG_ALREP = false;
+            FLAG_ACT_WEB = false;
           }
 
   #ifdef DEF_LANGUE
-          Langue = DEF_LANGUE;  /* pour la map avec une seule langue imposée */
+          Langue = DEF_LANGUE;  /* pour la map avec une seule langue imposï¿½e */
   #else
           /* Controle de la langue retournee par la FAV */
           Langue_Check = pModbusRsp->Modbus.Datas[12] >> 4; // maj de Langue (quartet haut de l'octet)
@@ -370,37 +378,37 @@ void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp)
           /* 091012 ATTENTION decalage sera ok jusque Z4 il faudra revoir le process si > Z4 */
           BUF_FAV_CdzR=((int16_t)pModbusRsp->Modbus.Datas[21 + decalage] << 8) + ((int16_t)pModbusRsp->Modbus.Datas[22 + decalage]);
         }
-        else if(FLAG_MSGPreg){/* pas de mise à jour des valeurs sinon */
+        else if(FLAG_MSGPreg){/* pas de mise ï¿½ jour des valeurs sinon */
           BUF_LED_SREGUL0 = (((uint16_t)pModbusRsp->Modbus.Datas[1] << 8) + ((uint16_t)pModbusRsp->Modbus.Datas[2]));
           BUF_LED_SREGUL1 = (((uint16_t)pModbusRsp->Modbus.Datas[3] << 8) + ((uint16_t)pModbusRsp->Modbus.Datas[4]));
           BUF_LED_SREGUL2 = (((uint16_t)pModbusRsp->Modbus.Datas[5] << 8) + ((uint16_t)pModbusRsp->Modbus.Datas[6]));
-          if(IS_BUFF_NOTEMPTY){/* si la FAV a initialisé le buffer d'echange */
+          if(IS_BUFF_NOTEMPTY){/* si la FAV a initialisï¿½ le buffer d'echange */
             memcpy(&sbREGUL,&BUF_LED_sbREGUL,sizeof(REGULATOR_BLOCK)); /* Buffer -> System */
-            FLAG_REFRESH_EEP=TRUE;
+            FLAG_REFRESH_EEP=true;
           }
         }
-        else if(FLAG_MSGPclk){/* pas de mise à jour des valeurs sinon */
+        else if(FLAG_MSGPclk){/* pas de mise ï¿½ jour des valeurs sinon */
           if(IS_MSGCLK_RD){/* maj seulement sur la reponse de la demande de lecture */
             BUF_LED_HEURE_AUTO = (((uint16_t)pModbusRsp->Modbus.Datas[1] << 8) + ((uint16_t)pModbusRsp->Modbus.Datas[2]));
           }
         }
-        L3_Status = L3_TX_ACKNOWLEDGED; /* ACK reçu */
+        L3_Status = L3_TX_ACKNOWLEDGED; /* ACK reï¿½u */
       break;
     
     case ALARM:
-        L3_Status = L3_TX_ACKNOWLEDGED; /* ACK reçu */
+        L3_Status = L3_TX_ACKNOWLEDGED; /* ACK reï¿½u */
       break;
     
     case READ_HOLDING_REG:
         if     (FLAG_MSGBkp0)memcpy(&SRegistresRW_THM.Reg_41502[0],&pModbusRsp->Modbus.Datas[1],48);
         else if(FLAG_MSGBkp1)memcpy(&SRegistresRW_THM.Reg_41502[24],&pModbusRsp->Modbus.Datas[1],48);
         else if(FLAG_MSGBkp2)memcpy(&SRegistresRW_THM.Reg_41502[48],&pModbusRsp->Modbus.Datas[1],48);
-        L3_Status = L3_TX_ACKNOWLEDGED; /* ACK reçu */
+        L3_Status = L3_TX_ACKNOWLEDGED; /* ACK reï¿½u */
       break;
     
     default:
-       /* Code Erreur : le message envoyé est erroné */
-        L3_Status = L3_TX_NACK; /* NACK reçu */
+       /* Code Erreur : le message envoyï¿½ est erronï¿½ */
+        L3_Status = L3_TX_NACK; /* NACK reï¿½u */
       
       break;
   }
@@ -409,119 +417,119 @@ void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp)
 /**********************************************************************************************************
 * NOM:void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
 *
-* DESCRIPTION      :Traitement de la trame de réponse à une requête ModBus
+* DESCRIPTION      :Traitement de la trame de rï¿½ponse ï¿½ une requï¿½te ModBus
 * PARAMETRES       :Ptr sur le buffer de Reponse, Ptr sur le buffer de requete.
 * VALEUR RETOURNEE :Sans
 * MAINTENANCE      :
 * 19/10/2009 JLD: Creation
 *********************************************************************************************************/
-void MODBUS_sendrw_req_pdu(uint16 StartAdr_R, uint16 StartAdr_W, uint16 Qty_R, uint16 Qty_W, uint8 W_Byte_Count, uint16_t* Datas, APU_SX1211* pModbusReq)
+void MODBUS_sendrw_req_pdu(uint16_t StartAdr_R, uint16_t StartAdr_W, uint16_t Qty_R, uint16_t Qty_W, uint8_t W_Byte_Count, uint16_t* Datas, APU_SX1211* pModbusReq)
 {
-  uint8 taille = 0;
-  uint8 byte_count;
+  uint8_t taille = 0;
+  uint8_t byte_count;
   pModbusReq->Modbus.FunctionCode = RD_WR_MULTIPLE_REG; /* Code de fonction */
   taille = 0;        
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_R >> 8); /* Adresse début lecture MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_R);      /* Adresse début lecture LSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(Qty_R >> 8); /* Nombre de mots à lire MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)Qty_R;        /* Nombre de mots à lire LSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_W >> 8);  /* Adresse début écriture */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)StartAdr_W;         /* Adresse début écriture */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(Qty_W >> 8); /* Nombre de mot à écrire MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)Qty_W; /* Nombre de mot à écrire LSB */
-  pModbusReq->Modbus.Datas[taille++] = W_Byte_Count; /* Nombre d'octets de données */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_R >> 8); /* Adresse dï¿½but lecture MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_R);      /* Adresse dï¿½but lecture LSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(Qty_R >> 8); /* Nombre de mots ï¿½ lire MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)Qty_R;        /* Nombre de mots ï¿½ lire LSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_W >> 8);  /* Adresse dï¿½but ï¿½criture */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)StartAdr_W;         /* Adresse dï¿½but ï¿½criture */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(Qty_W >> 8); /* Nombre de mot ï¿½ ï¿½crire MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)Qty_W; /* Nombre de mot ï¿½ ï¿½crire LSB */
+  pModbusReq->Modbus.Datas[taille++] = W_Byte_Count; /* Nombre d'octets de donnï¿½es */
   byte_count = W_Byte_Count;
   while(byte_count)
   {
-    pModbusReq->Modbus.Datas[taille++] = (*Datas >> 8); /* données */
+    pModbusReq->Modbus.Datas[taille++] = (*Datas >> 8); /* donnï¿½es */
     byte_count--;
-    pModbusReq->Modbus.Datas[taille++] = (uint8) *Datas; /* données */
+    pModbusReq->Modbus.Datas[taille++] = (uint8_t) *Datas; /* donnï¿½es */
     Datas++;
     byte_count--;   
   }
   pModbusReq->Taille = taille;
 
-} /* void MODBUS_sendrw_req_pdu(uint16 StartAdr_R, uint16 StartAdr_W, uint16 Qty_R, uint16 Qty_W, APU_SX1211* pModbusReq) */
+} /* void MODBUS_sendrw_req_pdu(uint16_t StartAdr_R, uint16_t StartAdr_W, uint16_t Qty_R, uint16_t Qty_W, APU_SX1211* pModbusReq) */
 
-void MODBUS_sendrw_req_pd2(uint16 StartAdr_R, uint16 StartAdr_W, uint16 Qty_R, uint16 Qty_W, uint8 W_Byte_Count, uint8_t*  Datas, APU_SX1211* pModbusReq)
+void MODBUS_sendrw_req_pd2(uint16_t StartAdr_R, uint16_t StartAdr_W, uint16_t Qty_R, uint16_t Qty_W, uint8_t W_Byte_Count, uint8_t*  Datas, APU_SX1211* pModbusReq)
 {
-  uint8 taille = 0;
-  uint8 byte_count;
+  uint8_t taille = 0;
+  uint8_t byte_count;
   pModbusReq->Modbus.FunctionCode = RD_WR_MULTIPLE_REG; /* Code de fonction */
   taille = 0;        
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_R >> 8); /* Adresse début lecture MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_R);      /* Adresse début lecture LSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(Qty_R >> 8); /* Nombre de mots à lire MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)Qty_R;        /* Nombre de mots à lire LSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_W >> 8);  /* Adresse début écriture */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)StartAdr_W;         /* Adresse début écriture */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(Qty_W >> 8); /* Nombre de mot à écrire MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)Qty_W; /* Nombre de mot à écrire LSB */
-  pModbusReq->Modbus.Datas[taille++] = W_Byte_Count; /* Nombre d'octets de données */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_R >> 8); /* Adresse dï¿½but lecture MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_R);      /* Adresse dï¿½but lecture LSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(Qty_R >> 8); /* Nombre de mots ï¿½ lire MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)Qty_R;        /* Nombre de mots ï¿½ lire LSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_W >> 8);  /* Adresse dï¿½but ï¿½criture */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)StartAdr_W;         /* Adresse dï¿½but ï¿½criture */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(Qty_W >> 8); /* Nombre de mot ï¿½ ï¿½crire MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)Qty_W; /* Nombre de mot ï¿½ ï¿½crire LSB */
+  pModbusReq->Modbus.Datas[taille++] = W_Byte_Count; /* Nombre d'octets de donnï¿½es */
   byte_count = W_Byte_Count;
   while(byte_count)
   {
-    pModbusReq->Modbus.Datas[taille++] = (uint8) *Datas; /* données */
+    pModbusReq->Modbus.Datas[taille++] = (uint8_t) *Datas; /* donnï¿½es */
     Datas++;
     byte_count--;   
   }
   pModbusReq->Taille = taille;
 
-} /* void MODBUS_sendrw_req_pd2(uint16 StartAdr_R, uint16 StartAdr_W, uint16 Qty_R, uint16 Qty_W, uint8 W_Byte_Count, uint8_t*  Datas, APU_SX1211* pModbusReq) */
+} /* void MODBUS_sendrw_req_pd2(uint16_t StartAdr_R, uint16_t StartAdr_W, uint16_t Qty_R, uint16_t Qty_W, uint8_t W_Byte_Count, uint8_t*  Datas, APU_SX1211* pModbusReq) */
 
 /**********************************************************************************************************
 * NOM:void MODBUS_mb_rsp_pdu(APU_SX1211* pModbusRsp,APU_SX1211* pModbusReq)
 *
-* DESCRIPTION      :Traitement de la trame de réponse à une requête ModBus
+* DESCRIPTION      :Traitement de la trame de rï¿½ponse ï¿½ une requï¿½te ModBus
 * PARAMETRES       :Ptr sur le buffer de Reponse, Ptr sur le buffer de requete.
 * VALEUR RETOURNEE :Sans
 * MAINTENANCE      :
 * 19/10/2009 JLD: Creation
 *********************************************************************************************************/
-void MODBUS_sendr_req_pdu(uint16 StartAdr_R, uint16 Qty_R, APU_SX1211* pModbusReq)
+void MODBUS_sendr_req_pdu(uint16_t StartAdr_R, uint16_t Qty_R, APU_SX1211* pModbusReq)
 {
-  uint8 taille = 0;
+  uint8_t taille = 0;
   pModbusReq->Modbus.FunctionCode = READ_HOLDING_REG; /* Code de fonction */
   taille = 0;        
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_R >> 8); /* Adresse début lecture MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(StartAdr_R);      /* Adresse début lecture LSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)(Qty_R >> 8); /* Nombre de mots à lire MSB */
-  pModbusReq->Modbus.Datas[taille++] = (uint8)Qty_R;        /* Nombre de mots à lire LSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_R >> 8); /* Adresse dï¿½but lecture MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(StartAdr_R);      /* Adresse dï¿½but lecture LSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)(Qty_R >> 8); /* Nombre de mots ï¿½ lire MSB */
+  pModbusReq->Modbus.Datas[taille++] = (uint8_t)Qty_R;        /* Nombre de mots ï¿½ lire LSB */
   pModbusReq->Taille = taille;
 
-} /* void MODBUS_sendr_req_pdu(uint16 StartAdr_R, , uint16 Qty_R, APU_SX1211* pModbusReq)*/
+} /* void MODBUS_sendr_req_pdu(uint16_t StartAdr_R, , uint16_t Qty_R, APU_SX1211* pModbusReq)*/
 
 /**********************************************************************************************************
-* NOM:void MODBUS_sendAl_req_pdu(uint8 NumeroAlarme, uint8 Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq)
+* NOM:void MODBUS_sendAl_req_pdu(uint8_t NumeroAlarme, uint8_t Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq)
 *
-* DESCRIPTION      :prépare une requete alarme 
-* PARAMETRES       :chaines de caractère à envoyer(nom du periph et alarme), pointeur sur le buffer de requete et le code alarme.
+* DESCRIPTION      :prï¿½pare une requete alarme 
+* PARAMETRES       :chaines de caractï¿½re ï¿½ envoyer(nom du periph et alarme), pointeur sur le buffer de requete et le code alarme.
 * VALEUR RETOURNEE :Sans
 * MAINTENANCE      :
 * 07/06/2011 BM: Creation
-* 03/10/2011 BM: Ajout parametre code alarme et chaine de caractères du nom de l'appareil qui transmet l'al
+* 03/10/2011 BM: Ajout parametre code alarme et chaine de caractï¿½res du nom de l'appareil qui transmet l'al
 * 27/10/2011 NA: Mise en place dans le THM.
 * 09/05/2012 NA: Modif, le num. de Z(x) est ajoute au texte pdt la transmision.
 *********************************************************************************************************/
-void MODBUS_sendAl_req_pdu(uint8 NumeroAlarme, uint8 Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq)
+void MODBUS_sendAl_req_pdu(uint8_t NumeroAlarme, uint8_t Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq)
 {
-  uint8 taille = 0;
-  uint8 ucNbrChar;
+  uint8_t taille = 0;
+  uint8_t ucNbrChar;
 
   if(Bitnewstate)
-  { /* si TRUE apparition */
+  { /* si true apparition */
     /* Definition du Code de fonction */
     pModbusReq->Modbus.FunctionCode = ALARM;    /* Code de fonction, 0x43 */
-    pModbusReq->Modbus.Datas[taille++] = NumeroAlarme; /* données */
+    pModbusReq->Modbus.Datas[taille++] = NumeroAlarme; /* donnï¿½es */
     taille++;
     
     /* Ajoute le texte sur la Ligne1, cad l'identifiant */
     ucNbrChar = 0;
     while(*StringLine1)
     {
-      pModbusReq->Modbus.Datas[taille++] = (*StringLine1); /* données */
+      pModbusReq->Modbus.Datas[taille++] = (*StringLine1); /* donnï¿½es */
       StringLine1++;
-      if(++ucNbrChar >= MAX_NBR_CHAR-1) break; /* On vérifie si la chaine de caractères fait au max 13 caractères. si >, on coupe le reste de la chaine */
+      if(++ucNbrChar >= MAX_NBR_CHAR-1) break; /* On vï¿½rifie si la chaine de caractï¿½res fait au max 13 caractï¿½res. si >, on coupe le reste de la chaine */
     }
     pModbusReq->Modbus.Datas[taille++] = ((THMZX+1)+'0'); /* Ajoute le numero de zone sur la Ligne1 */
     pModbusReq->Modbus.Datas[taille++] = (*"\0"); /* Termine le texte sur la Ligne1 */
@@ -530,24 +538,24 @@ void MODBUS_sendAl_req_pdu(uint8 NumeroAlarme, uint8 Bitnewstate, const char* St
     ucNbrChar = 0;
     while(*StringLine2)
     {
-      pModbusReq->Modbus.Datas[taille++] = (*StringLine2); /* données */
+      pModbusReq->Modbus.Datas[taille++] = (*StringLine2); /* donnï¿½es */
       StringLine2++;
-      if(++ucNbrChar >= MAX_NBR_CHAR) break; /* On vérifie si la chaine de caractères fait au max 14 caractères. si >, on coupe le reste de la chaine */
+      if(++ucNbrChar >= MAX_NBR_CHAR) break; /* On vï¿½rifie si la chaine de caractï¿½res fait au max 14 caractï¿½res. si >, on coupe le reste de la chaine */
     }
     pModbusReq->Modbus.Datas[taille++] = (*"\0"); /* Termine le texte sur la Ligne2 */
     
-    /* Declare au final le nbre d'octets à transmettre */
-    pModbusReq->Modbus.Datas[1] = (taille - 2); /* Nombre d'octet de données */
+    /* Declare au final le nbre d'octets ï¿½ transmettre */
+    pModbusReq->Modbus.Datas[1] = (taille - 2); /* Nombre d'octet de donnï¿½es */
     pModbusReq->Taille = taille;
   }
   else
-  { /* si FALSE disparition */
+  { /* si false disparition */
     pModbusReq->Modbus.FunctionCode = ALARM;    /* Code de fonction, 0x43 */
-    pModbusReq->Modbus.Datas[0] = NumeroAlarme; /* Numéro de l'alarme, 0 à 127 */
-    pModbusReq->Modbus.Datas[1] = 0;            /* Nombre d'octets de données, Toujours 0 */
+    pModbusReq->Modbus.Datas[0] = NumeroAlarme; /* Numï¿½ro de l'alarme, 0 ï¿½ 127 */
+    pModbusReq->Modbus.Datas[1] = 0;            /* Nombre d'octets de donnï¿½es, Toujours 0 */
     pModbusReq->Taille = 2;
   }
-}/* void MODBUS_sendAl_req_pdu(uint8 NumeroAlarme, uint8 Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq) */
+}/* void MODBUS_sendAl_req_pdu(uint8_t NumeroAlarme, uint8_t Bitnewstate, const char* StringLine1, const char* StringLine2, APU_SX1211* pModbusReq) */
 /**********************************************************************************************************
 * NOM:void MODBUS_Set_Registers(void)
 *
