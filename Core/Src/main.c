@@ -84,7 +84,7 @@ int main(void)
       uint8_t rfBuffer[SX1211_FIFO_SIZE];  // Taille max de la FIFO
       if (RF_ReceiveFrame(rfBuffer))  // Si un message RF est reçu
       {
-          SendUART("📡 Message RF reçu !\r\n");
+          SendUART("Message RF reçu !\r\n");
 
           char buffer[256] = {0};  // Buffer assez grand pour l'affichage
           sprintf(buffer, "Données RF : ");

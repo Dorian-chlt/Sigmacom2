@@ -252342,7 +252342,7 @@
     "scope": null
   },
   {
-    "ID": "c:main.c@2284@F@main@buffer",
+    "ID": "c:main.c@2279@F@main@buffer",
     "What": "Variable",
     "defdec": "Def",
     "display": "buffer",
@@ -252356,7 +252356,7 @@
     "scope": null
   },
   {
-    "ID": "c:main.c@2412@F@main@i",
+    "ID": "c:main.c@2407@F@main@i",
     "What": "Variable",
     "defdec": "Def",
     "display": "i",
@@ -252370,7 +252370,7 @@
     "scope": null
   },
   {
-    "ID": "c:main.c@2471@F@main@byte_str",
+    "ID": "c:main.c@2466@F@main@byte_str",
     "What": "Variable",
     "defdec": "Def",
     "display": "byte_str",
@@ -252398,7 +252398,7 @@
     "scope": null
   },
   {
-    "ID": "c:main.c@2960@F@SystemClock_Config@RCC_OscInitStruct",
+    "ID": "c:main.c@2955@F@SystemClock_Config@RCC_OscInitStruct",
     "What": "Variable",
     "defdec": "Def",
     "display": "RCC_OscInitStruct",
@@ -252412,7 +252412,7 @@
     "scope": null
   },
   {
-    "ID": "c:main.c@3007@F@SystemClock_Config@RCC_ClkInitStruct",
+    "ID": "c:main.c@3002@F@SystemClock_Config@RCC_ClkInitStruct",
     "What": "Variable",
     "defdec": "Def",
     "display": "RCC_ClkInitStruct",
