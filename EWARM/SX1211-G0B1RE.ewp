@@ -621,7 +621,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state></state>
+                    <state>$FILE_BNAME$.o</state>
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -1014,7 +1014,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state></state>
+                    <state>SX1211-G0B1RE_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1123,6 +1123,9 @@
             <group>
                 <name>Core</name>
                 <file>
+                    <name>$PROJ_DIR$\..\Core\Src\EEPROM.c</name>
+                </file>
+                <file>
                     <name>$PROJ_DIR$\..\Core\Src\gpio.c</name>
                 </file>
                 <file>
@@ -1139,6 +1142,9 @@
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\stm32g0xx_it.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Core\Src\stm_eeprom.c</name>
                 </file>
                 <file>
                     <name>$PROJ_DIR$\..\Core\Src\sx1211.c</name>
@@ -1194,6 +1200,12 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_rcc_ex.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_rtc.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_rtc_ex.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Drivers\STM32G0xx_HAL_Driver\Src\stm32g0xx_hal_spi.c</name>

@@ -34,6 +34,13 @@
 #ifndef __DEFS_H
 #define __DEFS_H
 
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>   // Pour printf
+#include <string.h> 
 /*=== DEFINITIONS SPECIFIQUES ==============================================================================================================*/
 #define _TYPE_		0x27	    /* Type de produit */
 #define _CDC_	  	0x00	    /* Version de cdc */
@@ -408,8 +415,8 @@ extern union word_def SMsg2Go;     /* Structure */
 #define FLAG_MSGSX2W              SMsg2Go.bit.b15
 
 /* Flags define */
-#define IS_ACT_VAC              (FLAG_ACT_VAC == TRUE)
-#define IS_ACT_ARR              (FLAG_ACT_ARR == TRUE)
+#define IS_ACT_VAC              (FLAG_ACT_VAC == true)
+#define IS_ACT_ARR              (FLAG_ACT_ARR == true)
 #define FLAG_FAV_HGL_ACT        (IS_ACT_VAC || IS_ACT_ARR)
 #define FLAG_FAV_HGL_END        (!FLAG_FAV_HGL_ACT)
 #define FLAGd_UPDKO             ((IS_FAVNORM && FLAG_FAV_HGL_ACT)||FLAG_ACT_INFO||(ucSMMODE == SMMOD_TEST_RXTX))
@@ -524,7 +531,7 @@ typedef struct {
   REGULATOR_BLOCK Pregul;
   #define sbREGUL               SRAM2EEP.Pregul
 }RAM2EEP;
-extern RAM2EEP SRAM2EEP;
+
 
 extern uint8_t ucSMLCD,ucSMINF,ucSMRAD,ucSMCLK;
 #define RAM_SHH_DAY7A_INIT   ((uint8_t)0xF0) /* SHH_DAYxx init */

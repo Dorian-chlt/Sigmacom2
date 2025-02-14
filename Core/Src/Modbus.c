@@ -30,6 +30,9 @@
 
 /*=== INCLUDE FILES =====================================================================================*/
 #include "Modbus.h"
+#include "EEPROM.h"
+#include "sx1211.h"
+#include "main.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -37,19 +40,46 @@
 #include <stdlib.h>
 #include <stdio.h>   // Pour printf
 #include <string.h>
-#include "defs.h"
 
+union word_def SFlags0; /* FLAG */
+union byte_def SFlags1; /* FLAG */
+union byte_def SFlags2; /* FLAG */
+union byte_def SFlags3; /* FLAG */
+union byte_def SFlags4; /* FLAG */
+union byte_def SFlags5; /* FLAG */
+union byte_def SFlags6; /* FLAG */
+union byte_def SFlags7; /* FLAG */
+union word_def SMsg2Go; /* FLAG */
+uint8_t ucTIM01sWEB_UPDT,ucTIM1TSWEBMODIF;
+uint16_t uiTIM5msRUN;
+ // Remplace par la version correspondant à ton MCU
+
+extern RAM2EEP SRAM2EEP;
 /*=== DEFINITIONS GLOBALES ==============================================================================*/
 /* Adresse Zone read/write specifique SIGMA */
 #define FIRST_ADRESS_RRW_SPEC     RRW_SAT1_SC_DEBUT
 #define LAST_ADRESS_RRW_SPEC      RRW_SAT1_SC_FIN
+#define FLAG_FAV_HGL_ACT        (IS_ACT_VAC || IS_ACT_ARR)
+#define DEC2BCD(dec) (((dec / 10) << 4) + (dec % 10))
+uint8_t Dec2Bcd(uint8_t dec){
+return (DEC2BCD(dec));
+}
 //#define _NO_MATCH_ERR_ /* Avec anti-erreur de matching sur 5B ald 4 */
 /*=== PROTOTYPES DES FONCTIONS ==========================================================================*/
-extern void RF_Keep_RXLV(void); /* Conditions de maintien en RXLV */
+
+extern RTC_HandleTypeDef hrtc;
+extern RTC_TimeTypeDef   sTime;
+extern RTC_DateTypeDef   sDate;
+
+
+void RF_Keep_RXLV(void); /* Conditions de maintien en RXLV */
 void MODBUS_Set_Registers(void);
 extern uint16_t uifnMEMFAV_CS(void);
-extern void RF_WEB2THM(void);
-extern void UPDT_SYS2BUF(void);
+
+void RF_WEB2THM(void);
+void UPDT_SYS2BUF(void);
+
+
 
 enum _L3_TX_STATUS_ {
   L3_TX_ACKNOWLEDGED,    /* ACK du distant le message a bien été compris */
@@ -74,6 +104,65 @@ REGRW_SAT_SGC SRegistresRW_SAT_SGC; /* Registres read/write sp�cifiques RW_SAT
 REGRW_SAT_LED SRegistresRW_SAT_LED; /* Registres read/write sp�cifiques RW_SAT_LED */
 REGRW_SGC_LED SRegistresRW_SGC_LED; /* Registres read/write sp�cifiques RW_SGC_LED */
 /*=== FONCTIONS =========================================================================================*/
+uint8_t FILT_MODE(uint8_t value){
+  switch(value)
+  {
+    default:
+      value = SMMOD_PERM_AUTO;
+    break;
+
+    case SMMOD_PERM_ASOL:
+      value = SMMOD_PERM_ASOL;
+    break;
+
+    case SMMOD_PERM_ALUN:
+      value = SMMOD_PERM_ALUN;
+    break;
+
+    case SMMOD_PERM_AGEL:
+      value = SMMOD_PERM_AGEL;
+    break;
+  }
+  return value;
+}/* end of uint8 FILT_MODE(uint8 value) */
+
+void RF_Keep_RXLV (void)
+{
+  FLAG_ACT_TIM5msRUN_BY_KEYB = false;
+  FLAG_ACT_TIM5msRUN_BY_RXLV = true;
+  uiTIM5msRUN = TIMEOUT_TIM5msRUN_ACT_BY_RXLV;
+}
+
+void UPDT_SYS2BUF(void){
+
+  BUF_WEB_ucCSESOL        = ucCSESOL;                     /* Maj FAV SAT1_Camb_C */  
+  BUF_WEB_ucCSELUN        = ucCSELUN;                     /* Maj FAV SAT1_Camb_R */  
+  BUF_WEB_ucCSEGEL        = ucCSEGEL;                     /* Maj FAV SAT1_Camb_HG */
+  BUF_WEB_ucSMMODE        = FILT_MODE(ucSMMODE);          /* Maj FAV SAT1_SMMODE */  
+  BUF_WEB_SFlagsWValueLSB = (uint8_t)(SFlags0Value     ); /* Maj des Flags LSB */  
+  BUF_WEB_SFlagsWValueMSB = (uint8_t)(SFlags0Value >> 8); /* Maj des Flags MSB */  
+  memcpy(&BUF_WEB_SHH_DAY0,&SHH_DAY0.RAM[0],42);            /* Maj des 7 plages horaires */
+}
+
+void UPDT_BUF2SYS(void){
+  
+  ucCSESOL      = BUF_WEB_ucCSESOL;   /* Maj FAV SAT1_Camb_C */  
+  ucCSELUN      = BUF_WEB_ucCSELUN;   /* Maj FAV SAT1_Camb_R */  
+  ucCSEGEL      = BUF_WEB_ucCSEGEL;   /* Maj FAV SAT1_Camb_HG */
+  ucSMMODE      = FILT_MODE(BUF_WEB_ucSMMODE);   /* Maj FAV SAT1_SMMODE */  
+  SFlags0Value  = ((uint16_t)BUF_WEB_SFlagsWValueMSB << 8) + ((uint16_t)BUF_WEB_SFlagsWValueLSB); /* Maj des Flags MSB & LSB */ 
+  memcpy(&SHH_DAY0.RAM[0],&BUF_WEB_SHH_DAY0,42);            /* Maj des 7 plages horaires WtoSx */
+
+}
+
+void RF_WEB2THM(void){
+
+  UPDT_BUF2SYS(); /* Maj des données du buffer d'échange vers le systeme */
+  FLAG_UPDT_WEB2THM = true;
+  FLAG_REFRESH_EEP = true;
+  FLAG_WEB_MODIF = true;
+  ucTIM1TSWEBMODIF = TIMEOUT_TIM1TSWEBMODIF;
+}
 /**********************************************************************************************************
 * NOM:uint16_t uifnMEMFAV_CS(void)
 *

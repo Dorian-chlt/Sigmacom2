@@ -18,6 +18,9 @@
 /*08/09/17 JLD  NID Rif supprime, Deplacement NID Rif_Sext */
 /*15/02/18 JLD  Ajout R41108-R41115 dans Face avant */
 /* Codes de fonctions */
+#ifndef __ERS2_MESSAGES_H
+#define __ERS2_MESSAGES_H
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -894,4 +897,5 @@ PDU_MODBUS Modbus;  /* Message ModBus (58 octets) */
   #define MATCHING_NETID    ((uint32_t)0xFFFFFFFF)                      
 #endif
 
+#endif
 /*==================== FIN DU FICHIER  =========================*/

@@ -22,6 +22,9 @@
 #include "usart.h"
 #include "gpio.h"
 #include "sx1211.h"
+#include "defs.h"
+#include "Modbus.h"
+#include "EEPROM.h"
 #include "ERS2_Messages.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -34,14 +37,37 @@
 uint32_t netid = 0xFFFFFFFF;
 void SystemClock_Config(void);
 
+RAM2EEP SRAM2EEP;
+
 APU_SX1211 TrameRx;
 APU_SX1211 TrameTx;
+uint8_t ucMEMFAV_SA;
+uint8_t ucMEMFAV_SM;
+uint8_t ucMEMFAV_SJ;
+uint16_t uiMEMFAV_CS;
 
 bool l3_net_to_appli(APU_SX1211* p)
 {
   return(RF_ReceiveFrame((uint8_t *)&p->Taille));
 }
 
+void l3_set_netid(uint32_t netid)
+{
+
+  RF_SetCurrentNetid(netid);  /* Appel a la couche 2 du SX1211 */
+
+}
+void RF_MatchingEnd(void)
+{
+  if(FLAG_READEND){
+    if(FLAG_READCHK){
+      ucIDKEYX = (uint8_t)(SRegistresRW_THM.Reg_41502[2]);/* maj de la variable courante en RAM avant la sauvegarde en NVM. */
+      read_eeprom((uint8_t *)&SRegistresRW_THM.Reg_41502[0], 4, &ucIDLAN0); /* lecture de l'eeprom */
+    }
+    EEP_Update(); /* Update Ram contents to virtual EEPROM */
+    FLAG_RESETMCU = true;
+  }
+}
 
 void SendUART(const char *msg) {
     HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
@@ -63,49 +89,47 @@ int main(void)
       SendUART("configue echouee\r\n");
     }
 
-    RF_SetCurrentNetid(netid);
-
-
     HAL_Delay(3000);
-    uint8_t netidNew = RF_GetCurrentNetid();  // Lire la valeur du NetID
 
- 
-
-    char buffer[50];
-    sprintf(buffer, "RF NetID: 0x%02X\r\n", netidNew);  // Formater l'affichage en hexadécimal
-    SendUART(buffer);  // Envoyer en UART
-
-    RF_GetCurrentNetid();
+    l3_set_netid(MATCHING_NETID); /* Ecriture de l'adresse de matching dans le sx1211 */
 
     SetRFMode(RF_RECEIVER);
 
     while (1)
     {
-      uint8_t rfBuffer[SX1211_FIFO_SIZE];  // Taille max de la FIFO
-      if (RF_ReceiveFrame(rfBuffer))  // Si un message RF est reçu
-      {
-          SendUART("Message RF reçu !\r\n");
-
-          char buffer[256] = {0};  // Buffer assez grand pour l'affichage
-          sprintf(buffer, "Données RF : ");
-
-          for (uint8_t i = 0; i < SX1211_FIFO_SIZE; i++) {
-              char byte_str[4];  // Buffer pour "0xXX "
-              sprintf(byte_str, "%02X ", rfBuffer[i]);  // Affichage en hexadécimal
-              strcat(buffer, byte_str);
+  
+          if (l3_net_to_appli(&TrameRx))  // Si un message RF est reçu
+          {
+            SendUART("Message RF reçu !\r\n");
+            if(!(TrameRx.Adresse & 0x80)){
+          /* MSB de Adresse à 0 -> le distant a envoyé une question */
+              if(FLAG_ACT_TIM5msRUN_BY_MATF || FLAG_ACT_TIM5msRUN_BY_MATC || (!(FLAG_ACT_MATC)&&(TrameRx.Cle == ucIDKEYX)) || TrameRx.Exp == NID_Banc_test)
+                { /* On vérifie la clé sauf dans le cas du banc test */         
+                MODBUS_mb_req_pdu(&TrameTx,&TrameRx); /* Traitement de la trame recu */
+                /* On répond. On ajoute la partie fixe layer3 */
+                TrameTx.Taille += SIZEOF_HEADER;
+                TrameTx.Dest = TrameRx.Exp; /* A destination de celui qui a envoyé la question */
+                TrameTx.Exp = ucIDNODE;     /* Mon Node ID */
+                TrameTx.Cle = ucIDKEYX;     /* Clé du périphérique */
+                TrameTx.Numero = TrameRx.Numero; /* On répond au numéro de message de la requête */
+                TrameTx.Adresse = TrameRx.Adresse | 0x80 ; /* on met MSB à 1 pour indiquer qu'on envoie une réponse */
+               
+                RF_TransmitFrame((uint8_t *)&TrameTx.Taille);  /* C'est parti !! */
+       
+                SendUART("Message RF envoyé !\r\n");
+                
+                  RF_MatchingEnd();                     /* dans le cas d'un matching */
+                }
+             }
+          }else{
+            SendUART("Aucun message RF reçu.\r\n");
           }
-
-          strcat(buffer, "\r\n");
-          SendUART(buffer);
-      }
-      else
-      {
-          SendUART("⛔ Aucun message RF reçu.\r\n");
-      }
+     
   
       HAL_Delay(720);
     }
 }
+
 
 
 /**

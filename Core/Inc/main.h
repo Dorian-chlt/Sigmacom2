@@ -28,11 +28,17 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g0xx_hal.h"
+#include "stm32g0xx_hal_flash.h"
+#include "stm32g0xx_hal_rtc.h"
+#include "defs.h"
+#include "target.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */

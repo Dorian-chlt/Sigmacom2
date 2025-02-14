@@ -42,13 +42,17 @@ C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\SX1211-G0B1RE\BrowseInfo\
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_flash_ex.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_pwr.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_pwr_ex.h \
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_rtc.h \
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_rtc_ex.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_spi.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_spi_ex.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_uart.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\stm32g0xx_hal_uart_ex.h \
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\defs.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\stdlib.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\DLib_Product_stdlib.h \
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\target.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\spi.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\main.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\ERS2_Messages.h \
-  C:\iar\ewarm-9.60.2\arm\inc\c\stdlib.h \
-  C:\iar\ewarm-9.60.2\arm\inc\c\DLib_Product_stdlib.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\usart.h
