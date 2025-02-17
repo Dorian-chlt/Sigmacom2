@@ -34,17 +34,21 @@
 #include <stdio.h>   // Pour printf
 #include <string.h>  // Pour strlen si besoin
 
+#define SIZEOF_HEADER     6 
 uint32_t netid = 0xFFFFFFFF;
 void SystemClock_Config(void);
+uint8_t newnetid;
 
 RAM2EEP SRAM2EEP;
 
 APU_SX1211 TrameRx;
-APU_SX1211 TrameTx;
+APU_SX1211 TrameEnvoie;
 uint8_t ucMEMFAV_SA;
 uint8_t ucMEMFAV_SM;
 uint8_t ucMEMFAV_SJ;
 uint16_t uiMEMFAV_CS;
+
+
 
 bool l3_net_to_appli(APU_SX1211* p)
 {
@@ -69,10 +73,21 @@ void RF_MatchingEnd(void)
   }
 }
 
+
 void SendUART(const char *msg) {
     HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
 }
 
+void ReadAndPrintIRQs(void)
+{
+    char buffer[64];
+
+    uint8_t irq0_val = IRQ_0;  // Lire IRQ_0 (GPIOB, PIN_6)
+    uint8_t irq1_val = IRQ_1;  // Lire IRQ_1 (GPIOA, PIN_8)
+
+    snprintf(buffer, sizeof(buffer), "IRQ_0: %d, IRQ_1: %d\r\n", irq0_val, irq1_val);
+    SendUART(buffer);  // Envoie la valeur des IRQs sur UART
+}
 
 
 int main(void)
@@ -89,7 +104,7 @@ int main(void)
       SendUART("configue echouee\r\n");
     }
 
-    HAL_Delay(3000);
+    HAL_Delay(1000);
 
     l3_set_netid(MATCHING_NETID); /* Ecriture de l'adresse de matching dans le sx1211 */
 
@@ -97,38 +112,135 @@ int main(void)
 
     while (1)
     {
-  
+       ReadAndPrintIRQs();  // Lire et afficher les IRQs
+       HAL_Delay(200);  // Pause de 500 ms
+
+      
           if (l3_net_to_appli(&TrameRx))  // Si un message RF est reçu
           {
             SendUART("Message RF reçu !\r\n");
             if(!(TrameRx.Adresse & 0x80)){
-          /* MSB de Adresse à 0 -> le distant a envoyé une question */
-              if(FLAG_ACT_TIM5msRUN_BY_MATF || FLAG_ACT_TIM5msRUN_BY_MATC || (!(FLAG_ACT_MATC)&&(TrameRx.Cle == ucIDKEYX)) || TrameRx.Exp == NID_Banc_test)
-                { /* On vérifie la clé sauf dans le cas du banc test */         
-                MODBUS_mb_req_pdu(&TrameTx,&TrameRx); /* Traitement de la trame recu */
-                /* On répond. On ajoute la partie fixe layer3 */
-                TrameTx.Taille += SIZEOF_HEADER;
-                TrameTx.Dest = TrameRx.Exp; /* A destination de celui qui a envoyé la question */
-                TrameTx.Exp = ucIDNODE;     /* Mon Node ID */
-                TrameTx.Cle = ucIDKEYX;     /* Clé du périphérique */
-                TrameTx.Numero = TrameRx.Numero; /* On répond au numéro de message de la requête */
-                TrameTx.Adresse = TrameRx.Adresse | 0x80 ; /* on met MSB à 1 pour indiquer qu'on envoie une réponse */
-               
-                RF_TransmitFrame((uint8_t *)&TrameTx.Taille);  /* C'est parti !! */
-       
-                SendUART("Message RF envoyé !\r\n");
-                
-                  RF_MatchingEnd();                     /* dans le cas d'un matching */
+         
+              if(true)
+                { // On vérifie la clé sauf dans le cas du banc test        
+                  MODBUS_mb_req_pdu(&TrameEnvoie,&TrameRx); //Traitement de la trame recu 
+                  // On répond. On ajoute la partie fixe layer3 
+                  TrameEnvoie.Taille += SIZEOF_HEADER;
+                  TrameEnvoie.Dest = TrameRx.Exp; // A destination de celui qui a envoyé la question 
+                  TrameEnvoie.Exp = 8;      //Mon Node ID 
+                  TrameEnvoie.Cle = ucIDKEYX;     // Clé du périphérique 
+                  TrameEnvoie.Numero = TrameRx.Numero; // On répond au numéro de message de la requête 
+                  TrameEnvoie.Adresse = TrameRx.Adresse | 0x80 ; // on met MSB à 1 pour indiquer qu'on envoie une réponse 
+                 
+                  RF_TransmitFrame((uint8_t *)&TrameEnvoie.Taille);  
+                  
+                  uint32_t combinedData = (TrameRx.Modbus.Datas[1] << 24) |
+                        (TrameRx.Modbus.Datas[2] << 16) |
+                        (TrameRx.Modbus.Datas[3] << 8)  |
+                        (TrameRx.Modbus.Datas[4]);
+                  
+                  char buffer[64];
+                  snprintf(buffer, sizeof(buffer), "Valeur combinée: 0x%08X\r\n", combinedData);
+                  SendUART(buffer);
+         
+                  SendUART("Message RF envoyé !\r\n");
+                  
+                  RF_MatchingEnd();                     
                 }
              }
-          }else{
-            SendUART("Aucun message RF reçu.\r\n");
-          }
+          
      
   
+  /*    
+
+uint8_t rfBuffer[SX1211_FIFO_SIZE];  // Taille max de la FIFO
+ 
+if (RF_ReceiveFrame(rfBuffer))  // Si un message RF est reçu
+{
+    SendUART("📡 Message RF reçu !\r\n");
+
+    char buffer[256] = {0};  // Buffer pour l'affichage
+    sprintf(buffer, "Données RF : ");
+
+    // Construire la trame complète sous forme hexadécimale
+    for (uint8_t i = 0; i < SX1211_FIFO_SIZE; i++) {
+        char byte_str[4];  // Buffer pour "0xXX "
+        sprintf(byte_str, "%02X ", rfBuffer[i]);  // Convertit chaque octet en hexadécimal
+        strcat(buffer, byte_str);
+    }
+    strcat(buffer, "\r\n");
+
+    SendUART(buffer); // Envoie la trame complète en UART
+
+    // ============================
+    // EXTRACTION DES 6 PREMIERS OCTETS
+    // ============================
+    uint8_t taille   = rfBuffer[0]; // Taille du message
+    uint8_t source   = rfBuffer[1]; // Source du message
+    uint8_t exp      = rfBuffer[2]; // Expéditeur
+    uint8_t cle      = rfBuffer[3]; // Clé de validation
+    uint8_t numero   = rfBuffer[4]; // Numéro du message
+    uint8_t adresse  = rfBuffer[5]; // Adresse cible
+
+    // ============================
+    // EXTRACTION DU RESTE DE LA TRAME (58 OCTETS)
+    // ============================
+    uint8_t data[SX1211_FIFO_SIZE - 6];  // Stocker le payload
+    memcpy(data, &rfBuffer[6], SX1211_FIFO_SIZE - 6);  // Copie du payload
+
+    // ============================
+    // AFFICHAGE DES VALEURS EXTRAITES
+    // ============================
+    char infoBuffer[200]; // Buffer pour afficher les détails
+    snprintf(infoBuffer, sizeof(infoBuffer),
+        "📡 Trame RF analysée :\r\n"
+        "Taille   : 0x%02X (%d)\r\n"
+        "Source   : 0x%02X\r\n"
+        "Exp      : 0x%02X\r\n"
+        "Clé      : 0x%02X\r\n"
+        "Numéro   : 0x%02X\r\n"
+        "Adresse  : 0x%02X\r\n",
+        taille, taille, source, exp, cle, numero, adresse
+    );
+    SendUART(infoBuffer);
+    // ============================
+    // AFFICHAGE DU PAYLOAD (RESTE DES DONNÉES)
+    // ============================
+    SendUART("Données (payload) : ");
+    for (uint8_t i = 0; i < SX1211_FIFO_SIZE - 6; i++) {
+        snprintf(infoBuffer, sizeof(infoBuffer), "%02X ", data[i]);
+        SendUART(infoBuffer);
+    }
+    SendUART("\r\n");
+    
+    
+    SendUART("Enoie d'une reponse ");
+    
+    MODBUS_mb_req_pdu(&TrameEnvoie,&TrameRx);
+    
+    TrameEnvoie.Taille += SIZEOF_HEADER;
+    TrameEnvoie.Dest = exp; // A destination de celui qui a envoyé la question 
+    TrameEnvoie.Exp = 8;      //Mon Node ID 
+    TrameEnvoie.Cle = cle;     // Clé du périphérique 
+    TrameEnvoie.Numero = numero; // On répond au numéro de message de la requête 
+    TrameEnvoie.Adresse = adresse | 0x80 ; // on met MSB à 1 pour indiquer qu'on envoie une réponse 
+   
+    RF_TransmitFrame((uint8_t *)&TrameEnvoie.Taille); 
+    
+    SendUART("Reponse envoyé ");
+    */
+
+      }
+      else
+      {
+          SendUART("Aucun message RF reçu.\r\n");
+      }
+
       HAL_Delay(720);
     }
+
 }
+
 
 
 

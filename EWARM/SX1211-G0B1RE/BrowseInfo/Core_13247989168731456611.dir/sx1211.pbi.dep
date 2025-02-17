@@ -1,13 +1,16 @@
 C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\SX1211-G0B1RE\BrowseInfo\Core_13247989168731456611.dir\sx1211.pbi: \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\Core\Src\sx1211.c \
-  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\sx1211.h \
-  C:\iar\ewarm-9.60.2\arm\inc\c\stdbool.h \
-  C:\iar\ewarm-9.60.2\arm\inc\c\stdio.h \
-  C:\iar\ewarm-9.60.2\arm\inc\c\ycheck.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\aarch32\intrinsics.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\aarch32\iccarm_builtin.h \
   C:\iar\ewarm-9.60.2\arm\inc\c\yvals.h \
   C:\iar\ewarm-9.60.2\arm\inc\c\DLib_Defaults.h \
   C:\iar\ewarm-9.60.2\arm\inc\c\DLib_Config_Full.h \
   C:\iar\ewarm-9.60.2\arm\inc\c\DLib_Product.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\aarch32\iar_intrinsics_common.h \
+  C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Core\Inc\sx1211.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\stdbool.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\stdio.h \
+  C:\iar\ewarm-9.60.2\arm\inc\c\ycheck.h \
   C:\iar\ewarm-9.60.2\arm\inc\c\ysizet.h \
   C:\iar\ewarm-9.60.2\arm\inc\c\string.h \
   C:\iar\ewarm-9.60.2\arm\inc\c\DLib_Product_string.h \
@@ -23,7 +26,6 @@ C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\SX1211-G0B1RE\BrowseInfo\
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\CMSIS\Include\cmsis_version.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\CMSIS\Include\cmsis_compiler.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\CMSIS\Include\cmsis_iccarm.h \
-  C:\iar\ewarm-9.60.2\arm\inc\c\aarch32\iccarm_builtin.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\CMSIS\Include\mpu_armv7.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\CMSIS\Device\ST\STM32G0xx\Include\system_stm32g0xx.h \
   C:\Users\d.chollet\Documents\STM32\SX1211-G0B1RE\EWARM\..\Drivers\STM32G0xx_HAL_Driver\Inc\Legacy\stm32_hal_legacy.h \

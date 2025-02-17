@@ -93,7 +93,7 @@ C31:00                    Non initialise en mode buffered
                           Ne peut etre copie ou diffuse sans son accord prealable
 ---------------------------------------------------------------------------------------------------*/
 /* Includes ---------------------------------------------------------------------------------------*/
-
+#include "intrinsics.h"
 #include <sx1211.h>
 #include "spi.h"
 #include "main.h"
@@ -111,7 +111,9 @@ void SetMyNid(uint8_t Nid);
 
 uint8_t ucCarierDetect;
 uint8_t ucAccessFailure;
-uint8_t ucMRK_RXOVR; /* marqueur de purge de la fifo */        
+uint8_t ucMRK_RXOVR; /* marqueur de purge de la fifo */    
+uint8_t aTxBuffer[1];
+uint8_t aRxBuffer[1];
 #define TX_MAX_CHECK /* Pour la definition de la duree de TX_MAX_TIME */
 /*----------------------------------------------------------------------------*/
 #ifdef  TX_MAX_CHECK
@@ -131,6 +133,19 @@ static uint8_t ucRfValue;                                     /* Derniere valeur
 uint8_t ucRfVal_RSSI_IRQ;                                     /* Derniere valeur de la RSSI */
 /* CCITT O.153 */
 static uint16_t uiLfsr = CCITT_SEED;
+
+uint8_t SPI2_SendByte(uint8_t value)
+{
+  /*##-2- Start the Full Duplex Communication process ########################*/  
+  /* While the SPI in TransmitReceive process, user can transmit data through 
+  "aTxBuffer" buffer & receive data through "aRxBuffer" */
+  /* Timeout is set to 2ms */
+  aTxBuffer[0] = (uint8_t)value;
+  HAL_SPI_TransmitReceive(&hspi1, (uint8_t*)aTxBuffer, (uint8_t *)aRxBuffer, 1, 2);
+
+  /* Return the byte read from the SPI bus */
+  return aRxBuffer[0];
+}
 
 /* Tables -----------------------------------------------------------------------------------------*/
 /* Init en mode packet (mode de fonctionnement normal) */
@@ -422,7 +437,6 @@ bool RF_ReceiveFrame(uint8_t *buffer)
   if(IRQ_1)
   { /* CRC OK, passe en standby et positionne le flag pour une lecture de fifo */
     uint8_t dummy = 0xFF; // Valeur pour générer l'horloge SPI
-    uint8_t receivedByte;
     
     uint8_t len = 0;    /*!< JLD 03/10/16: limite la taille a SX1211_FIFO_SIZE bytes */
     SetRFMode(RF_STANDBY);
@@ -431,7 +445,7 @@ bool RF_ReceiveFrame(uint8_t *buffer)
     while(len < SX1211_FIFO_SIZE && IRQ_0)
     { /* Lecture tant que fifo non vide */
       NSS_DATA_LOW();
-      HAL_SPI_TransmitReceive(&hspi1, &dummy, &receivedByte, 1, HAL_MAX_DELAY);
+      r = SPI2_SendByte(dummy);
       NSS_DATA_HIGH();
       buffer[len++] = r;
     }
@@ -826,10 +840,51 @@ void WriteFifo(uint8_t dataByte)
 {
   
   NSS_DATA_LOW();
-  HAL_SPI_Transmit(&hspi1, &dataByte, 2, HAL_MAX_DELAY);
+  SPI2_SendByte(dataByte);
   NSS_DATA_HIGH();
 
 } /* void WriteFifo(uint8_t data) */
+
+/**
+   * @brief BSP_Wait1us
+   * @param None
+   * @retval None
+   * SystemCoreClock 80MHz __no_operation() x 70
+   * SystemCoreClock 20MHz __no_operation() x 10
+   * SystemCoreClock 16MHz __no_operation() x 6 without PLL usage 23/04/18
+   * SystemCoreClock 10MHz __no_operation() x 1
+   */
+void BSP_Wait1us (void)
+{
+  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+  __no_operation(); //__no_operation(); __no_operation(); __no_operation(); __no_operation();
+// commented for SystemCoreClock 20MHz, uncomment all for 80MHz
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+//  __no_operation(); __no_operation(); __no_operation(); __no_operation(); __no_operation();
+}
+
+/**
+   * @brief BSP_WaitXus
+   * @param uint16_t
+   * @retval None
+   */
+void BSP_WaitXus(uint16_t t)
+{
+  do
+  {
+    BSP_Wait1us();
+  } while(t--);
+}
 
 
 /**********************************************************************************************************
@@ -844,8 +899,9 @@ void WriteFifo(uint8_t dataByte)
 *********************************************************************************************************/
 void Wait(uint16_t t)
 {
-    HAL_Delay(t);  // Attente de 't' millisecondes
-}
+  BSP_WaitXus(t);
+} /* void Wait(uint16 t)  */
+
 
 /*--------------------------------------------------------------------------------------------------------*/
 /*------------------------------ CSMA-CA -----------------------------------------------------------------*/
