@@ -22,6 +22,16 @@
 #include <stdio.h>   // Pour printf
 #include <string.h>
 
+union word_def SFlags0; /* FLAG */
+union byte_def SFlags1; /* FLAG */
+union byte_def SFlags2; /* FLAG */
+union byte_def SFlags3; /* FLAG */
+union byte_def SFlags4; /* FLAG */
+union byte_def SFlags5; /* FLAG */
+union byte_def SFlags6; /* FLAG */
+union byte_def SFlags7; /* FLAG */
+union word_def SMsg2Go; /* FLAG */
+
 extern RAM2EEP SRAM2EEP;
 /* Definition of RAM area */
 uint16_t VarDataTab[NB_OF_VAR];
@@ -39,6 +49,7 @@ void EEP_Update(void); /* Update virtual EEPROM contents from RAM */
 void RAM_Update(void); /* Update RAM contents from virtual EEPROM */
 extern void WEB_Update(void); /* Update WEB contents */
 void EEP_Autoformat(void);
+
 
 /*
 Table de const

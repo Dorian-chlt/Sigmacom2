@@ -30,7 +30,9 @@
 
 /*=== INCLUDE FILES =====================================================================================*/
 #include "Modbus.h"
+#include "EEPROM.h"
 #include "main.h"
+#include "sx1211.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -51,6 +53,10 @@
 #define FLAG_FAV_HGL_ACT        (IS_ACT_VAC || IS_ACT_ARR)
 //#define _NO_MATCH_ERR_ /* Avec anti-erreur de matching sur 5B ald 4 */
 /*=== PROTOTYPES DES FONCTIONS ==========================================================================*/
+uint8_t ucTIM01sWEB_UPDT,ucTIM1TSWEBMODIF;
+uint16_t uiTIM5msRUN;
+
+extern RAM2EEP SRAM2EEP;
 
 extern RTC_HandleTypeDef hrtc;
 extern RTC_TimeTypeDef   sTime;
@@ -85,6 +91,133 @@ REGRW_SAT_SGC SRegistresRW_SAT_SGC; /* Registres read/write sp�cifiques RW_SAT
 REGRW_SAT_LED SRegistresRW_SAT_LED; /* Registres read/write sp�cifiques RW_SAT_LED */
 REGRW_SGC_LED SRegistresRW_SGC_LED; /* Registres read/write sp�cifiques RW_SGC_LED */
 /*=== FONCTIONS =========================================================================================*/
+
+/**********************************************************************************************************
+* NOM:uint8 Dec2Bcd(uint8 dec)
+*
+* DESCRIPTION      : 2-digit Decimal to BCD conversion function:
+* PARAMETRES       : 2-digit Decimal
+* VALEUR RETOURNEE : uint8 BCD
+* MAINTENANCE      : Example: Dec2Bcd(45) = 01000101
+* 28/06/2010  NA   : Creation
+*********************************************************************************************************/
+
+#define DEC2BCD(dec) (((dec / 10) << 4) + (dec % 10))
+uint8_t Dec2Bcd(uint8_t dec){
+return (DEC2BCD(dec));
+}
+/**********************************************************************************************************
+* NOM:void RF_Keep_RXLV(void)
+*
+* DESCRIPTION      : Maintient dans le mode RXLV tant que les trames sont reçues.
+* PARAMETRES       : sans
+* VALEUR RETOURNEE : sans
+* MAINTENANCE      :
+* 09/05/2011  NA   : Creation
+*********************************************************************************************************/
+void RF_Keep_RXLV (void)
+{
+  FLAG_ACT_TIM5msRUN_BY_KEYB = false;
+  FLAG_ACT_TIM5msRUN_BY_RXLV = true;
+  uiTIM5msRUN = TIMEOUT_TIM5msRUN_ACT_BY_RXLV;
+}//end of void RF_Keep_RXLV (void)
+
+/**********************************************************************************************************
+* NOM:uint8 FILT_MODE(uint8 value)
+*
+* DESCRIPTION      : Filtrage des valeurs du selecteur de mode
+*                    au seules valeurs utilisées par l'appli
+* PARAMETRES       : sans
+* VALEUR RETOURNEE : valeur filtree.
+* MAINTENANCE      :
+* 31/01/2018  NA   : Creation
+*********************************************************************************************************/
+uint8_t FILT_MODE(uint8_t value){
+  switch(value)
+  {
+    default:
+      value = SMMOD_PERM_AUTO;
+    break;
+
+    case SMMOD_PERM_ASOL:
+      value = SMMOD_PERM_ASOL;
+    break;
+
+    case SMMOD_PERM_ALUN:
+      value = SMMOD_PERM_ALUN;
+    break;
+
+    case SMMOD_PERM_AGEL:
+      value = SMMOD_PERM_AGEL;
+    break;
+  }
+  return value;
+}/* end of uint8 FILT_MODE(uint8 value) */
+
+
+
+/**********************************************************************************************************
+* NOM:void UPDT_SYS2BUF(void)
+*
+* DESCRIPTION      : Maj des données du systeme vers le buffer d'échange.
+* PARAMETRES       : sans
+* VALEUR RETOURNEE : sans
+* MAINTENANCE      :
+* 08/03/2016  NA   : Creation
+* 31/01/2018  NA   : Modif filtrage des valeurs transmises au WEB
+*********************************************************************************************************/
+void UPDT_SYS2BUF(void){
+
+  BUF_WEB_ucCSESOL        = ucCSESOL;                     /* Maj FAV SAT1_Camb_C */  
+  BUF_WEB_ucCSELUN        = ucCSELUN;                     /* Maj FAV SAT1_Camb_R */  
+  BUF_WEB_ucCSEGEL        = ucCSEGEL;                     /* Maj FAV SAT1_Camb_HG */
+  BUF_WEB_ucSMMODE        = FILT_MODE(ucSMMODE);          /* Maj FAV SAT1_SMMODE */  
+  BUF_WEB_SFlagsWValueLSB = (uint8_t)(SFlags0Value     ); /* Maj des Flags LSB */  
+  BUF_WEB_SFlagsWValueMSB = (uint8_t)(SFlags0Value >> 8); /* Maj des Flags MSB */  
+  memcpy(&BUF_WEB_SHH_DAY0,&SHH_DAY0.RAM[0],42);            /* Maj des 7 plages horaires */
+
+}
+/**********************************************************************************************************
+* NOM:void UPDT_BUF2SYS(void)
+*
+* DESCRIPTION      : Maj des données du buffer d'échange vers le systeme.
+* PARAMETRES       : sans
+* VALEUR RETOURNEE : sans
+* MAINTENANCE      :
+* 08/03/2016  NA   : Creation
+* 31/01/2018  NA   : Modif filtrage des valeurs reçues du WEB
+*********************************************************************************************************/
+void UPDT_BUF2SYS(void){
+  
+  ucCSESOL      = BUF_WEB_ucCSESOL;   /* Maj FAV SAT1_Camb_C */  
+  ucCSELUN      = BUF_WEB_ucCSELUN;   /* Maj FAV SAT1_Camb_R */  
+  ucCSEGEL      = BUF_WEB_ucCSEGEL;   /* Maj FAV SAT1_Camb_HG */
+  ucSMMODE      = FILT_MODE(BUF_WEB_ucSMMODE);   /* Maj FAV SAT1_SMMODE */  
+  SFlags0Value  = ((uint16_t)BUF_WEB_SFlagsWValueMSB << 8) + ((uint16_t)BUF_WEB_SFlagsWValueLSB); /* Maj des Flags MSB & LSB */ 
+  memcpy(&SHH_DAY0.RAM[0],&BUF_WEB_SHH_DAY0,42);            /* Maj des 7 plages horaires WtoSx */
+
+}/* end of void UPDT_BUF2SYS(void) */
+
+/**********************************************************************************************************
+* NOM:void RF_WEB2THM(void)
+*
+* DESCRIPTION      : Contenu à recopier dans le THM.
+* PARAMETRES       : sans
+* VALEUR RETOURNEE : sans
+* MAINTENANCE      :
+* 19/02/2016  NA   : Creation
+* 21/03/2016  NA   : Ajout temoin de modification du THM demandé par le WEB.
+*********************************************************************************************************/
+void RF_WEB2THM(void){
+
+  UPDT_BUF2SYS(); /* Maj des données du buffer d'échange vers le systeme */
+  FLAG_UPDT_WEB2THM = true;
+  FLAG_REFRESH_EEP = true;
+  FLAG_WEB_MODIF = true;
+  ucTIM1TSWEBMODIF = TIMEOUT_TIM1TSWEBMODIF;
+}/* end of void RF_WEB2THM(void) */
+
+
 /**********************************************************************************************************
 * NOM:uint16_t uifnMEMFAV_CS(void)
 *

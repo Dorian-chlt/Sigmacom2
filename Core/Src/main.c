@@ -37,18 +37,18 @@
 #define SIZEOF_HEADER     6 
 uint32_t netid = 0xFFFFFFFF;
 void SystemClock_Config(void);
-uint8_t newnetid;
+uint32_t newnetid;
+uint8_t CleCom;
 
 RAM2EEP SRAM2EEP;
 
 APU_SX1211 TrameRx;
 APU_SX1211 TrameEnvoie;
+APU_SX1211 TrameReq;
 uint8_t ucMEMFAV_SA;
 uint8_t ucMEMFAV_SM;
 uint8_t ucMEMFAV_SJ;
 uint16_t uiMEMFAV_CS;
-
-
 
 bool l3_net_to_appli(APU_SX1211* p)
 {
@@ -61,18 +61,6 @@ void l3_set_netid(uint32_t netid)
   RF_SetCurrentNetid(netid);  /* Appel a la couche 2 du SX1211 */
 
 }
-void RF_MatchingEnd(void)
-{
-  if(FLAG_READEND){
-    if(FLAG_READCHK){
-      ucIDKEYX = (uint8_t)(SRegistresRW_THM.Reg_41502[2]);/* maj de la variable courante en RAM avant la sauvegarde en NVM. */
-      read_eeprom((uint8_t *)&SRegistresRW_THM.Reg_41502[0], 4, &ucIDLAN0); /* lecture de l'eeprom */
-    }
-    EEP_Update(); /* Update Ram contents to virtual EEPROM */
-    FLAG_RESETMCU = true;
-  }
-}
-
 
 void SendUART(const char *msg) {
     HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
@@ -112,16 +100,14 @@ int main(void)
 
     while (1)
     {
-       ReadAndPrintIRQs();  // Lire et afficher les IRQs
-       HAL_Delay(200);  // Pause de 500 ms
 
-      
+      //matching
           if (l3_net_to_appli(&TrameRx))  // Si un message RF est reçu
           {
             SendUART("Message RF reçu !\r\n");
             if(!(TrameRx.Adresse & 0x80)){
-         
-              if(true)
+              
+              if(TrameRx.Modbus.FunctionCode == SET_NETID)
                 { // On vérifie la clé sauf dans le cas du banc test        
                   MODBUS_mb_req_pdu(&TrameEnvoie,&TrameRx); //Traitement de la trame recu 
                   // On répond. On ajoute la partie fixe layer3 
@@ -134,102 +120,46 @@ int main(void)
                  
                   RF_TransmitFrame((uint8_t *)&TrameEnvoie.Taille);  
                   
-                  uint32_t combinedData = (TrameRx.Modbus.Datas[1] << 24) |
-                        (TrameRx.Modbus.Datas[2] << 16) |
-                        (TrameRx.Modbus.Datas[3] << 8)  |
-                        (TrameRx.Modbus.Datas[4]);
+                  newnetid =  (TrameRx.Modbus.Datas[1] << 24) |                 //0x069262A8
+                              (TrameRx.Modbus.Datas[2] << 16) |
+                              (TrameRx.Modbus.Datas[3] << 8)  |
+                              (TrameRx.Modbus.Datas[4]);
                   
-                  char buffer[64];
-                  snprintf(buffer, sizeof(buffer), "Valeur combinée: 0x%08X\r\n", combinedData);
-                  SendUART(buffer);
+                  CleCom =  TrameRx.Cle;                                        //a 
+                 
+                  
+                  l3_set_netid(newnetid);
          
-                  SendUART("Message RF envoyé !\r\n");
+                  SendUART("netid mis à jour !\r\n");
                   
-                  RF_MatchingEnd();                     
+                  HAL_Delay(720);
                 }
-             }
-          
-     
-  
-  /*    
-
-uint8_t rfBuffer[SX1211_FIFO_SIZE];  // Taille max de la FIFO
- 
-if (RF_ReceiveFrame(rfBuffer))  // Si un message RF est reçu
-{
-    SendUART("📡 Message RF reçu !\r\n");
-
-    char buffer[256] = {0};  // Buffer pour l'affichage
-    sprintf(buffer, "Données RF : ");
-
-    // Construire la trame complète sous forme hexadécimale
-    for (uint8_t i = 0; i < SX1211_FIFO_SIZE; i++) {
-        char byte_str[4];  // Buffer pour "0xXX "
-        sprintf(byte_str, "%02X ", rfBuffer[i]);  // Convertit chaque octet en hexadécimal
-        strcat(buffer, byte_str);
-    }
-    strcat(buffer, "\r\n");
-
-    SendUART(buffer); // Envoie la trame complète en UART
-
-    // ============================
-    // EXTRACTION DES 6 PREMIERS OCTETS
-    // ============================
-    uint8_t taille   = rfBuffer[0]; // Taille du message
-    uint8_t source   = rfBuffer[1]; // Source du message
-    uint8_t exp      = rfBuffer[2]; // Expéditeur
-    uint8_t cle      = rfBuffer[3]; // Clé de validation
-    uint8_t numero   = rfBuffer[4]; // Numéro du message
-    uint8_t adresse  = rfBuffer[5]; // Adresse cible
-
-    // ============================
-    // EXTRACTION DU RESTE DE LA TRAME (58 OCTETS)
-    // ============================
-    uint8_t data[SX1211_FIFO_SIZE - 6];  // Stocker le payload
-    memcpy(data, &rfBuffer[6], SX1211_FIFO_SIZE - 6);  // Copie du payload
-
-    // ============================
-    // AFFICHAGE DES VALEURS EXTRAITES
-    // ============================
-    char infoBuffer[200]; // Buffer pour afficher les détails
-    snprintf(infoBuffer, sizeof(infoBuffer),
-        "📡 Trame RF analysée :\r\n"
-        "Taille   : 0x%02X (%d)\r\n"
-        "Source   : 0x%02X\r\n"
-        "Exp      : 0x%02X\r\n"
-        "Clé      : 0x%02X\r\n"
-        "Numéro   : 0x%02X\r\n"
-        "Adresse  : 0x%02X\r\n",
-        taille, taille, source, exp, cle, numero, adresse
-    );
-    SendUART(infoBuffer);
-    // ============================
-    // AFFICHAGE DU PAYLOAD (RESTE DES DONNÉES)
-    // ============================
-    SendUART("Données (payload) : ");
-    for (uint8_t i = 0; i < SX1211_FIFO_SIZE - 6; i++) {
-        snprintf(infoBuffer, sizeof(infoBuffer), "%02X ", data[i]);
-        SendUART(infoBuffer);
-    }
-    SendUART("\r\n");
-    
-    
-    SendUART("Enoie d'une reponse ");
-    
-    MODBUS_mb_req_pdu(&TrameEnvoie,&TrameRx);
-    
-    TrameEnvoie.Taille += SIZEOF_HEADER;
-    TrameEnvoie.Dest = exp; // A destination de celui qui a envoyé la question 
-    TrameEnvoie.Exp = 8;      //Mon Node ID 
-    TrameEnvoie.Cle = cle;     // Clé du périphérique 
-    TrameEnvoie.Numero = numero; // On répond au numéro de message de la requête 
-    TrameEnvoie.Adresse = adresse | 0x80 ; // on met MSB à 1 pour indiquer qu'on envoie une réponse 
-   
-    RF_TransmitFrame((uint8_t *)&TrameEnvoie.Taille); 
-    
-    SendUART("Reponse envoyé ");
-    */
-
+              else if (TrameRx.Modbus.FunctionCode == READ_HOLDING_REG){
+                SendUART("Réponse ReadHolding !\r\n");
+                HAL_Delay(720);
+              }else{
+                SendUART("Fonction code pas reconnue\r\n");
+                HAL_Delay(720);
+              }
+                       
+              SendUART("Envoie de la requete\r\n");
+       // demande requete
+              TrameReq.Taille += SIZEOF_HEADER;
+              TrameReq.Dest = NID_Chaudiere_maitre; // A destination de celui qui a envoyé la question 
+              TrameReq.Exp = NID_Thermostat_LCD_Zone_1;      //Mon Node ID 
+              TrameReq.Cle = CleCom;     // Clé du périphérique 
+              TrameReq.Numero = 1; // On répond au numéro de message de la requête 
+              TrameReq.Adresse = 0 ; // on met MSB à 1 pour indiquer qu'on envoie une réponse 
+              
+              TrameReq.Modbus.FunctionCode = READ_HOLDING_REG;
+              MODBUS_sendr_req_pdu(RRW_FAV_RTC_ANNEE_MOIS,24,&TrameReq);
+              
+              RF_TransmitFrame((uint8_t *)&TrameReq.Taille);
+              
+              
+              HAL_Delay(720);
+            }
+                         
       }
       else
       {
@@ -241,6 +171,34 @@ if (RF_ReceiveFrame(rfBuffer))  // Si un message RF est reçu
 
 }
 
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin == GPIO_PIN_13)  // Vérifie si c'est bien le bouton USER
+    {
+        SendUART("📡 Envoi de la requête...\r\n");
+
+        // ==============================
+        // 💡 Remplissage de la trame
+        // ==============================
+        TrameReq.Taille += SIZEOF_HEADER;
+        TrameReq.Dest = NID_Chaudiere_maitre;  // Destinataire
+        TrameReq.Exp = NID_Thermostat_LCD_Zone_1;  // Expéditeur (Mon Node ID)
+        TrameReq.Cle = CleCom;  // Clé de validation
+        TrameReq.Numero = 1;  // Numéro de la requête
+        TrameReq.Adresse = 0;  // Adresse (MSB à 1 pour réponse)
+
+        // Modbus Function Code
+        TrameReq.Modbus.FunctionCode = READ_HOLDING_REG;
+
+        // Appel à la fonction MODBUS
+        MODBUS_sendr_req_pdu(RRW_FAV_RTC_ANNEE_MOIS, 24, &TrameReq);
+
+        // Transmission RF
+        RF_TransmitFrame((uint8_t *)&TrameReq.Taille);
+        
+        SendUART("✅ Requête envoyée !\r\n");
+    }
+}
 
 
 
